@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .card { @apply bg-white rounded-xl shadow-sm border border-slate-100 p-5; }
+  .input-primary { @apply w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500; }
+  .btn-primary { @apply bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
+  .btn-secondary { @apply bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
+  .btn-danger { @apply bg-rose-600 hover:bg-rose-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
+  .badge-tier-0 { @apply bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full text-xs font-medium; }
+  .badge-tier-1 { @apply bg-emerald-100 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-xs font-medium; }
+  .badge-tier-2 { @apply bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full text-xs font-medium; }
+  .badge-tier-3 { @apply bg-rose-100 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full text-xs font-medium; }
+}
