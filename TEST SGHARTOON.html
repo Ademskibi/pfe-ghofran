@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EduDetect – Dépistage Troubles d'Apprentissage</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#4f46e5;--primary-hover:#4338ca;--primary-light:#eef2ff;
+  --green:#10b981;--green-light:#d1fae5;
+  --orange:#f59e0b;--orange-light:#fef3c7;
+  --red:#ef4444;--red-light:#fee2e2;
+  --blue:#3b82f6;--blue-light:#dbeafe;
+  --purple:#8b5cf6;--purple-light:#ede9fe;
+  --bg:#f1f5f9;--surface:#ffffff;
+  --text:#0f172a;--muted:#64748b;--border:#e2e8f0;
+  --radius:14px;--radius-lg:20px;
+  --shadow:0 4px 20px rgba(79,70,229,.10);
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+.hidden{display:none!important}
+button{font-family:'Nunito',sans-serif;cursor:pointer}
+input,select{font-family:'Nunito',sans-serif}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+
+/* ===================== TEACHER DASHBOARD ===================== */
+#teacher-view{min-height:100vh;display:flex;flex-direction:column}
+
+/* Header */
+.t-header{
+  background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+  color:#fff;padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 4px 20px rgba(79,70,229,.35)
+}
+.t-logo{display:flex;align-items:center;gap:14px}
+.t-logo-icon{
+  width:46px;height:46px;background:rgba(255,255,255,.2);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:22px
+}
+.t-logo h1{font-size:1.5rem;font-weight:900;letter-spacing:-.5px}
+.t-logo p{font-size:.78rem;opacity:.8;margin-top:2px}
+.t-header-btns{display:flex;gap:10px}
+.btn-white{background:#fff;color:var(--primary);border:none;padding:9px 20px;border-radius:10px;font-weight:800;font-size:.85rem;transition:.2s}
+.btn-white:hover{background:#eef2ff;transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.35);padding:9px 20px;border-radius:10px;font-weight:700;font-size:.85rem;transition:.2s}
+.btn-ghost:hover{background:rgba(255,255,255,.25)}
+
+/* Stats */
+.t-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:24px 32px 0}
+.stat-card{background:var(--surface);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);border-left:4px solid transparent;display:flex;flex-direction:column;gap:5px;transition:.2s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-card.bl{border-color:var(--primary)}.stat-card.bg{border-color:var(--green)}.stat-card.bo{border-color:var(--orange)}.stat-card.br{border-color:var(--red)}
+.stat-num{font-size:2rem;font-weight:900;line-height:1}
+.stat-lbl{font-size:.76rem;color:var(--muted);font-weight:700}
+
+/* Main grid */
+.t-main{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px 32px 32px}
+
+/* Panels */
+.panel{background:var(--surface);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-head h2{font-size:.95rem;font-weight:800;display:flex;align-items:center;gap:7px}
+.panel-head .icon{font-size:1.1rem}
+.search-box{padding:7px 13px;border-radius:8px;border:1.5px solid var(--border);font-size:.83rem;background:var(--bg);width:190px;outline:none;transition:.2s}
+.search-box:focus{border-color:var(--primary)}
+
+/* Student list */
+.s-list{padding:10px 12px;display:flex;flex-direction:column;gap:7px;max-height:400px;overflow-y:auto}
+.s-card{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;border:2px solid transparent;cursor:pointer;background:var(--bg);transition:.18s}
+.s-card:hover,.s-card.active{background:var(--primary-light);border-color:var(--primary)}
+.s-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;flex-shrink:0}
+.s-info{flex:1;min-width:0}
+.s-name{font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-meta{font-size:.74rem;color:var(--muted);margin-top:2px}
+.s-badges{display:flex;flex-wrap:wrap;gap:5px;flex-shrink:0}
+.badge{padding:3px 9px;border-radius:99px;font-size:.68rem;font-weight:800;white-space:nowrap}
+.b-wait{background:#f1f5f9;color:var(--muted)}
+.b-done{background:var(--green-light);color:#065f46}
+.b-dy{background:var(--orange-light);color:#92400e}
+.b-dc{background:var(--red-light);color:#991b1b}
+.b-mod{background:#fef9c3;color:#713f12}
+.b-ok{background:var(--green-light);color:#065f46}
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted)}
+.empty-icon{font-size:2.2rem;margin-bottom:10px}
+
+/* Results panel */
+#result-panel{padding:18px 22px;min-height:220px}
+.r-header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.r-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:#fff}
+.r-name{font-size:1.05rem;font-weight:800}
+.r-meta{font-size:.78rem;color:var(--muted);margin-top:3px}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.score-box{border-radius:12px;padding:15px 18px}
+.score-box h3{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.bar-bg{height:9px;background:rgba(0,0,0,.1);border-radius:99px;overflow:hidden;margin-bottom:7px}
+.bar-fill{height:100%;border-radius:99px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.score-pct{font-size:1.5rem;font-weight:900}
+.score-risk{font-size:.73rem;margin-top:2px;opacity:.85}
+.reco-box{background:var(--bg);border-radius:12px;padding:14px 18px}
+.reco-box h3{font-size:.82rem;font-weight:800;margin-bottom:12px}
+.reco-item{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px;font-size:.8rem;line-height:1.5}
+.reco-ic{flex-shrink:0;font-size:.95rem}
+.btn-launch{width:100%;background:var(--primary);color:#fff;border:none;padding:12px;border-radius:12px;font-size:.95rem;font-weight:800;margin-top:14px;transition:.2s;letter-spacing:.3px}
+.btn-launch:hover{background:var(--primary-hover);transform:translateY(-1px)}
+.btn-redo{background:#64748b!important}
+.btn-redo:hover{background:#475569!important}
+
+/* ===================== MODAL ===================== */
+#modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px)}
+.modal-box{background:#fff;border-radius:22px;padding:30px;width:420px;box-shadow:0 24px 64px rgba(0,0,0,.2)}
+.modal-box h2{font-size:1.2rem;font-weight:800;margin-bottom:22px}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:5px}
+.form-group input{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:.95rem;outline:none;transition:.2s;font-family:'Nunito',sans-serif}
+.form-group input:focus{border-color:var(--primary)}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.btn-cancel{background:var(--bg);color:var(--text);border:none;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.88rem}
+.btn-cancel:hover{background:var(--border)}
+.btn-save{background:var(--primary);color:#fff;border:none;padding:10px 22px;border-radius:10px;font-weight:800;font-size:.88rem;transition:.2s}
+.btn-save:hover{background:var(--primary-hover)}
+
+/* ===================== STUDENT TEST VIEW ===================== */
+#student-view{min-height:100vh;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+#test-box{background:#fff;border-radius:24px;width:100%;max-width:680px;box-shadow:0 8px 40px rgba(0,0,0,.13);overflow:hidden}
+
+/* Test topbar */
+.test-top{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:16px 26px;display:flex;align-items:center;gap:14px}
+.test-stag{background:rgba(255,255,255,.2);padding:4px 13px;border-radius:99px;font-size:.8rem;font-weight:700;white-space:nowrap}
+.test-prog-wrap{flex:1}
+.test-prog-lbl{font-size:.72rem;opacity:.8;margin-bottom:5px}
+.prog-bg{background:rgba(255,255,255,.25);border-radius:99px;height:7px}
+.prog-fill{height:100%;border-radius:99px;background:#fff;transition:width .5s ease}
+
+/* Test body */
+.test-body{padding:32px 38px}
+.cat-badge{display:inline-block;padding:4px 13px;border-radius:99px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px}
+.cb-dy{background:var(--orange-light);color:#92400e}
+.cb-dc{background:var(--red-light);color:#991b1b}
+.q-num{font-size:.76rem;color:var(--muted);font-weight:700;margin-bottom:7px}
+.q-text{font-size:1.25rem;font-weight:800;line-height:1.45;margin-bottom:22px}
+
+/* Stimuli */
+.stim-word{font-size:2rem;font-weight:900;text-align:center;padding:18px 20px;background:var(--primary-light);border-radius:14px;color:var(--primary);letter-spacing:4px;margin-bottom:22px}
+.stim-num{font-size:2.4rem;font-weight:900;text-align:center;padding:16px 20px;background:var(--red-light);border-radius:14px;color:var(--red);margin-bottom:22px}
+.stim-emoji{font-size:2.8rem;text-align:center;padding:16px 20px;background:var(--bg);border-radius:14px;letter-spacing:6px;line-height:1.6;margin-bottom:22px}
+
+/* Timer */
+.timer-wrap{margin-bottom:18px}
+.timer-bg{background:var(--bg);border-radius:99px;height:5px}
+.timer-fill{height:100%;border-radius:99px;background:var(--primary);transition:width .1s linear}
+
+/* Choices */
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ch-btn{padding:15px 18px;border-radius:13px;border:2px solid var(--border);background:var(--bg);font-size:1.05rem;font-weight:700;transition:.18s;text-align:center;font-family:'Nunito',sans-serif}
+.ch-btn:hover:not(:disabled){border-color:var(--primary);background:var(--primary-light);color:var(--primary)}
+.ch-btn.correct{border-color:var(--green)!important;background:var(--green-light)!important;color:#065f46!important}
+.ch-btn.wrong{border-color:var(--red)!important;background:var(--red-light)!important;color:#991b1b!important}
+.ch-btn:disabled{cursor:not-allowed}
+
+/* Text answer */
+.text-ans{display:flex;gap:10px}
+.text-ans input{flex:1;padding:13px 16px;border-radius:11px;border:2px solid var(--border);font-size:1.1rem;font-weight:700;outline:none;transition:.2s;font-family:'Nunito',sans-serif}
+.text-ans input:focus{border-color:var(--primary)}
+.text-ans button{padding:13px 24px;background:var(--primary);color:#fff;border:none;border-radius:11px;font-size:.95rem;font-weight:800;transition:.2s}
+.text-ans button:hover{background:var(--primary-hover)}
+
+/* Feedback */
+.feedback{margin-top:13px;padding:10px 16px;border-radius:10px;font-weight:700;font-size:.85rem;text-align:center}
+.fb-ok{background:var(--green-light);color:#065f46}
+.fb-err{background:var(--red-light);color:#991b1b}
+
+/* Next btn */
+.test-nav{display:flex;justify-content:flex-end;margin-top:24px}
+.btn-next{background:var(--primary);color:#fff;border:none;padding:12px 30px;border-radius:12px;font-size:.95rem;font-weight:800;transition:.2s}
+.btn-next:hover:not(:disabled){background:var(--primary-hover);transform:translateY(-1px)}
+.btn-next:disabled{background:#c7d2fe;cursor:not-allowed;transform:none}
+
+/* Welcome & End */
+.welcome,.end-screen{padding:52px 38px;text-align:center}
+.big-em{font-size:4rem;margin-bottom:16px}
+.welcome h2,.end-screen h2{font-size:1.75rem;font-weight:900;margin-bottom:10px}
+.welcome p,.end-screen p{color:var(--muted);margin-bottom:26px;font-size:.95rem;line-height:1.6}
+.btn-begin{background:var(--primary);color:#fff;border:none;padding:15px 40px;border-radius:14px;font-size:1.05rem;font-weight:900;transition:.2s;letter-spacing:.3px}
+.btn-begin:hover{background:var(--primary-hover);transform:translateY(-2px)}
+.stars-row{font-size:2.2rem;letter-spacing:8px;margin:14px 0}
+
+/* Responsive */
+@media(max-width:900px){
+  .t-stats,.t-main{grid-template-columns:1fr 1fr;padding:16px}
+  .t-main{grid-template-columns:1fr}
+  .t-header{padding:14px 16px;flex-wrap:wrap;gap:10px}
+}
+@media(max-width:580px){
+  .t-stats{grid-template-columns:1fr 1fr}
+  .choices{grid-template-columns:1fr}
+  .score-grid{grid-template-columns:1fr}
+  .test-body{padding:22px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== TEACHER VIEW ===================== -->
+<div id="teacher-view">
+  <header class="t-header">
+    <div class="t-logo">
+      <div class="t-logo-icon">🧠</div>
+      <div>
+        <h1>EduDetect</h1>
+        <p>Dépistage des troubles d'apprentissage</p>
+      </div>
+    </div>
+    <div class="t-header-btns">
+      <button class="btn-white" onclick="openModal()">➕ Ajouter élève</button>
+      <button class="btn-ghost" onclick="exportCSV()">📥 Exporter CSV</button>
+    </div>
+  </header>
+
+  <div class="t-stats">
+    <div class="stat-card bl"><span class="stat-num" id="st-total">0</span><span class="stat-lbl">Élèves inscrits</span></div>
+    <div class="stat-card bg"><span class="stat-num" id="st-done">0</span><span class="stat-lbl">Tests complétés</span></div>
+    <div class="stat-card bo"><span class="stat-num" id="st-dy">0</span><span class="stat-lbl">Risque dyslexie</span></div>
+    <div class="stat-card br"><span class="stat-num" id="st-dc">0</span><span class="stat-lbl">Risque dyscalculie</span></div>
+  </div>
+
+  <div class="t-main">
+    <!-- Student List -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2><span class="icon">👧</span> Élèves</h2>
+        <input class="search-box" type="text" id="search" placeholder="Rechercher..." oninput="renderList()"/>
+      </div>
+      <div class="s-list" id="student-list"></div>
+    </div>
+
+    <!-- Results -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2><span class="icon">📊</span> Résultats & Recommandations</h2>
+      </div>
+      <div id="result-panel">
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <p>Sélectionnez un élève pour voir ses résultats</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== STUDENT TEST VIEW ===================== -->
+<div id="student-view" class="hidden">
+  <div id="test-box"></div>
+</div>
+
+<!-- ===================== MODAL ===================== -->
+<div id="modal-overlay" class="hidden" onclick="overlayClick(event)">
+  <div class="modal-box">
+    <h2>➕ Ajouter un élève</h2>
+    <form onsubmit="addStudent(event)">
+      <div class="form-group"><label>Prénom</label><input id="m-fn" type="text" placeholder="ex : Sophie" required/></div>
+      <div class="form-group"><label>Nom</label><input id="m-ln" type="text" placeholder="ex : Martin" required/></div>
+      <div class="form-group"><label>Âge (6–11 ans)</label><input id="m-ag" type="number" min="6" max="11" placeholder="8" required/></div>
+      <div class="form-group"><label>Classe</label><input id="m-cl" type="text" placeholder="ex : CE2" required/></div>
+      <div class="modal-btns">
+        <button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button>
+        <button type="submit" class="btn-save">Ajouter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ===================================================
+   QUESTION BANK — 8 Dyslexie + 8 Dyscalculie
+=================================================== */
+const Q = [
+  // DYSLEXIE
+  {id:"dy1",type:"dyslexia",qt:"choice",inst:"Quel mot est écrit correctement ?",stim:null,sc:null,choices:["bateau","bateou","batau","bato"],ans:"bateau",tl:20},
+  {id:"dy2",type:"dyslexia",qt:"choice",inst:"Laquelle de ces lettres est un « b » ?",stim:"b   d   p   q",sc:"stim-emoji",choices:["b","d","p","q"],ans:"b",tl:15},
+  {id:"dy3",type:"dyslexia",qt:"choice",inst:"Quel mot se prononce différemment des autres ?",stim:null,sc:null,choices:["chat","chant","chats","chas"],ans:"chant",tl:20},
+  {id:"dy4",type:"dyslexia",qt:"choice",inst:"Quel mot est identique au modèle ?",stim:"LION",sc:"stim-word",choices:["LIOM","LION","LOIN","TION"],ans:"LION",tl:18},
+  {id:"dy5",type:"dyslexia",qt:"text",inst:"Écris le mot que tu entends : « MAISON »",stim:"🏠",sc:"stim-emoji",ans:"maison",tl:30},
+  {id:"dy6",type:"dyslexia",qt:"choice",inst:"Combien de syllabes dans « PAPILLON » ?",stim:"🦋 PAPILLON",sc:"stim-emoji",choices:["2","3","4","5"],ans:"3",tl:20},
+  {id:"dy7",type:"dyslexia",qt:"choice",inst:"Quel mot commence par le son « f » ?",stim:null,sc:null,choices:["vache","phoques","balle","dent"],ans:"phoques",tl:20},
+  {id:"dy8",type:"dyslexia",qt:"choice",inst:"Retrouve le mot caché dans : « msoltoleil »",stim:null,sc:null,choices:["mso","soleil","ltol","solt"],ans:"soleil",tl:25},
+  // DYSCALCULIE
+  {id:"dc1",type:"dyscalculia",qt:"choice",inst:"Quel chiffre est le plus grand ?",stim:"7   3   9   5",sc:"stim-num",choices:["7","3","9","5"],ans:"9",tl:15},
+  {id:"dc2",type:"dyscalculia",qt:"choice",inst:"Combien de points vois-tu ?",stim:"● ● ●\n● ● ●\n● ●",sc:"stim-emoji",choices:["6","7","8","9"],ans:"8",tl:20},
+  {id:"dc3",type:"dyscalculia",qt:"text",inst:"Calcule : 4 + 5 = ?",stim:"4 + 5 = ?",sc:"stim-num",ans:"9",tl:25},
+  {id:"dc4",type:"dyscalculia",qt:"choice",inst:"Quelle suite est dans le bon ordre croissant ?",stim:null,sc:null,choices:["3,7,5,9","2,4,6,8","10,5,8,3","1,3,2,4"],ans:"2,4,6,8",tl:20},
+  {id:"dc5",type:"dyscalculia",qt:"choice",inst:"Quel nombre se trouve entre 6 et 10 ?",stim:"6  ?  10",sc:"stim-num",choices:["4","8","11","5"],ans:"8",tl:18},
+  {id:"dc6",type:"dyscalculia",qt:"text",inst:"Calcule : 10 – 3 = ?",stim:"10 – 3 = ?",sc:"stim-num",ans:"7",tl:25},
+  {id:"dc7",type:"dyscalculia",qt:"choice",inst:"Quel symbole signifie « plus grand que » ?",stim:null,sc:null,choices:["<",">","=","≠"],ans:">",tl:15},
+  {id:"dc8",type:"dyscalculia",qt:"choice",inst:"Tu as 5 🍬 et tu en donnes 2. Combien reste-t-il ?",stim:"🍬🍬🍬🍬🍬",sc:"stim-emoji",choices:["2","3","4","7"],ans:"3",tl:20},
+];
+
+/* ===================================================
+   STATE
+=================================================== */
+let students = JSON.parse(localStorage.getItem("edu_students")||"[]");
+let selectedId = null, currentId = null;
+let testQ=[], testIdx=0, testAns=[], timerInt=null, ansGiven=false, tStart=0;
+
+const COLORS=["#4f46e5","#10b981","#f59e0b","#ef4444","#8b5cf6","#3b82f6","#ec4899","#0ea5e9"];
+const save=()=>localStorage.setItem("edu_students",JSON.stringify(students));
+const av=id=>(parseInt(id))%COLORS.length;
+const ini=s=>(s.fn[0]+s.ln[0]).toUpperCase();
+
+/* ===================================================
+   STUDENT CRUD
+=================================================== */
+function addStudent(e){
+  e.preventDefault();
+  const s={id:Date.now().toString(),fn:document.getElementById("m-fn").value.trim(),ln:document.getElementById("m-ln").value.trim(),age:parseInt(document.getElementById("m-ag").value),cls:document.getElementById("m-cl").value.trim(),done:false,ans:[],score:null};
+  students.push(s); save(); closeModal(); renderList(); updateStats(); e.target.reset();
+}
+
+/* ===================================================
+   RENDER LIST
+=================================================== */
+function renderList(){
+  const q=document.getElementById("search").value.toLowerCase();
+  const el=document.getElementById("student-list");
+  const filtered=students.filter(s=>(s.fn+" "+s.ln).toLowerCase().includes(q));
+  if(!filtered.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">👤</div><p>Aucun élève trouvé</p></div>`;return;}
+  el.innerHTML=filtered.map(s=>{
+    let bd="";
+    if(!s.done) bd+=`<span class="badge b-wait">En attente</span>`;
+    else{
+      bd+=`<span class="badge b-done">Complété</span>`;
+      if(s.score){
+        if(s.score.dyR==="élevé") bd+=`<span class="badge b-dy">Dyslexie</span>`;
+        if(s.score.dcR==="élevé") bd+=`<span class="badge b-dc">Dyscalculie</span>`;
+        if(s.score.dyR==="modéré"||s.score.dcR==="modéré") bd+=`<span class="badge b-mod">Risque modéré</span>`;
+        if(s.score.dyR==="faible"&&s.score.dcR==="faible") bd+=`<span class="badge b-ok">✓ Normal</span>`;
+      }
+    }
+    return `<div class="s-card${selectedId===s.id?" active":""}" onclick="selectStudent('${s.id}')">
+      <div class="s-av" style="background:${COLORS[av(s.id)]}">${ini(s)}</div>
+      <div class="s-info"><div class="s-name">${s.fn} ${s.ln}</div><div class="s-meta">${s.age} ans · ${s.cls}</div></div>
+      <div class="s-badges">${bd}</div>
+    </div>`;
+  }).join("");
+}
+
+function updateStats(){
+  document.getElementById("st-total").textContent=students.length;
+  document.getElementById("st-done").textContent=students.filter(s=>s.done).length;
+  document.getElementById("st-dy").textContent=students.filter(s=>s.score&&s.score.dyR==="élevé").length;
+  document.getElementById("st-dc").textContent=students.filter(s=>s.score&&s.score.dcR==="élevé").length;
+}
+
+function selectStudent(id){
+  selectedId=id; renderList(); showResult(id);
+}
+
+/* ===================================================
+   RESULT DISPLAY
+=================================================== */
+function riskStyle(r){
+  if(r==="élevé") return{bg:"#fee2e2",text:"#991b1b",bar:"#ef4444"};
+  if(r==="modéré") return{bg:"#fef3c7",text:"#92400e",bar:"#f59e0b"};
+  return{bg:"#d1fae5",text:"#065f46",bar:"#10b981"};
+}
+
+function getRecos(score){
+  const r=[];
+  if(score.dyR!=="faible"){
+    r.push({ic:"📖",t:"Orienter vers un orthophoniste pour une évaluation approfondie."});
+    r.push({ic:"🔡",t:"Utiliser des polices adaptées (OpenDyslexic) dans les supports de cours."});
+    r.push({ic:"🎧",t:"Proposer des supports audio en complément des textes écrits."});
+    r.push({ic:"⏳",t:"Accorder du temps supplémentaire lors des évaluations écrites."});
+  }
+  if(score.dcR!=="faible"){
+    r.push({ic:"🔢",t:"Utiliser des supports visuels : réglettes, jetons, représentations concrètes."});
+    r.push({ic:"🧮",t:"Décomposer chaque opération en étapes simples et progressives."});
+    r.push({ic:"🎮",t:"Utiliser des jeux numériques adaptés à la dyscalculie."});
+    r.push({ic:"🩺",t:"Consulter un neuropsychologue si les difficultés persistent."});
+  }
+  if(!r.length){
+    r.push({ic:"✅",t:"Résultats dans la norme — maintenir un suivi régulier."});
+    r.push({ic:"🌟",t:"Encourager l'élève et valoriser ses progrès quotidiens."});
+  }
+  return r;
+}
+
+function showResult(id){
+  const s=students.find(x=>x.id===id);
+  const p=document.getElementById("result-panel");
+  if(!s) return;
+  if(!s.done||!s.score){
+    p.innerHTML=`<div class="r-header">
+      <div class="r-av" style="background:${COLORS[av(s.id)]}">${ini(s)}</div>
+      <div><div class="r-name">${s.fn} ${s.ln}</div><div class="r-meta">${s.age} ans · ${s.cls}</div></div>
+    </div>
+    <p style="color:var(--muted);margin-bottom:16px;font-size:.85rem;line-height:1.6">Cet élève n'a pas encore passé le test.<br>Lancez-le sur l'ordinateur de l'élève.</p>
+    <button class="btn-launch" onclick="launchTest('${s.id}')">🚀 Lancer le test pour ${s.fn}</button>`;
+    return;
+  }
+  const {dyR,dcR,dyS,dcS}=s.score;
+  const ds=riskStyle(dyR), dcs=riskStyle(dcR);
+  const recos=getRecos(s.score);
+  const dyP=Math.round(dyS*100), dcP=Math.round(dcS*100);
+  p.innerHTML=`<div class="r-header">
+    <div class="r-av" style="background:${COLORS[av(s.id)]}">${ini(s)}</div>
+    <div><div class="r-name">${s.fn} ${s.ln}</div><div class="r-meta">${s.age} ans · ${s.cls}</div></div>
+  </div>
+  <div class="score-grid">
+    <div class="score-box" style="background:${ds.bg};color:${ds.text}">
+      <h3>📖 Dyslexie</h3>
+      <div class="bar-bg"><div class="bar-fill" id="bar-dy" style="width:0%;background:${ds.bar}"></div></div>
+      <div class="score-pct">${dyP}%</div>
+      <div class="score-risk">Risque : <strong>${dyR}</strong></div>
+    </div>
+    <div class="score-box" style="background:${dcs.bg};color:${dcs.text}">
+      <h3>🔢 Dyscalculie</h3>
+      <div class="bar-bg"><div class="bar-fill" id="bar-dc" style="width:0%;background:${dcs.bar}"></div></div>
+      <div class="score-pct">${dcP}%</div>
+      <div class="score-risk">Risque : <strong>${dcR}</strong></div>
+    </div>
+  </div>
+  <div class="reco-box">
+    <h3>💡 Recommandations pédagogiques</h3>
+    ${recos.map(r=>`<div class="reco-item"><span class="reco-ic">${r.ic}</span><span>${r.t}</span></div>`).join("")}
+  </div>
+  <button class="btn-launch btn-redo" onclick="launchTest('${s.id}')">🔄 Refaire le test</button>`;
+  // Animate bars
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      const bd=document.getElementById("bar-dy");
+      const bdc=document.getElementById("bar-dc");
+      if(bd) bd.style.width=dyP+"%";
+      if(bdc) bdc.style.width=dcP+"%";
+    },100);
+  });
+}
+
+/* ===================================================
+   SCORE ALGORITHM
+=================================================== */
+function computeScore(answers){
+  const dy=answers.filter(a=>a.type==="dyslexia");
+  const dc=answers.filter(a=>a.type==="dyscalculia");
+  function calc(grp){
+    if(!grp.length) return{risk:"faible",score:0};
+    const err=grp.filter(a=>!a.ok).length/grp.length;
+    const slow=grp.reduce((s,a)=>s+Math.min(a.t/a.tl,1.5),0)/grp.length-0.4;
+    const sc=Math.min(err*.7+Math.max(slow,0)*.3,1);
+    return{risk:sc>.58?"élevé":sc>.32?"modéré":"faible",score:sc};
+  }
+  const r1=calc(dy),r2=calc(dc);
+  return{dyR:r1.risk,dyS:r1.score,dcR:r2.risk,dcS:r2.score};
+}
+
+/* ===================================================
+   TEST LAUNCH
+=================================================== */
+function launchTest(id){
+  currentId=id;
+  testQ=[...Q].sort(()=>Math.random()-.5);
+  testIdx=0; testAns=[];
+  document.getElementById("teacher-view").classList.add("hidden");
+  document.getElementById("student-view").classList.remove("hidden");
+  const s=students.find(x=>x.id===id);
+  showWelcome(s);
+}
+
+function showWelcome(s){
+  document.getElementById("test-box").innerHTML=`
+  <div class="welcome">
+    <div class="big-em">👋</div>
+    <h2>Bonjour ${s.fn} !</h2>
+    <p>Tu vas répondre à ${testQ.length} petites questions.<br>Fais de ton mieux, prends ton temps.<br>Il n'y a pas de mauvaises réponses !</p>
+    <button class="btn-begin" onclick="renderQ()">C'est parti ! ✨</button>
+  </div>`;
+}
+
+/* ===================================================
+   RENDER QUESTION
+=================================================== */
+function renderQ(){
+  clearInterval(timerInt);
+  if(testIdx>=testQ.length){finishTest();return;}
+  const q=testQ[testIdx];
+  ansGiven=false; tStart=Date.now();
+  const pct=((testIdx)/testQ.length*100).toFixed(0);
+  const s=students.find(x=>x.id===currentId);
+
+  // Stimulus HTML
+  let stimH="";
+  if(q.stim) stimH=`<div class="${q.sc||"stim-emoji"}">${q.stim.replace(/\n/g,"<br>")}</div>`;
+
+  // Answer HTML
+  let ansH="";
+  if(q.qt==="choice"){
+    ansH=`<div class="choices">${q.choices.map(c=>`<button class="ch-btn" onclick="pickChoice(this,'${esc(c)}','${esc(q.ans)}','${q.id}')">${c}</button>`).join("")}</div>`;
+  } else {
+    ansH=`<div class="text-ans">
+      <input type="text" id="ta" placeholder="Ta réponse..." autocomplete="off" autocapitalize="off"
+        onkeydown="if(event.key==='Enter')pickText('${q.id}','${esc(q.ans)}')"/>
+      <button onclick="pickText('${q.id}','${esc(q.ans)}')">OK ✓</button>
+    </div>`;
+  }
+
+  const catH=q.type==="dyslexia"
+    ?`<span class="cat-badge cb-dy">📖 Dyslexie</span>`
+    :`<span class="cat-badge cb-dc">🔢 Dyscalculie</span>`;
+
+  document.getElementById("test-box").innerHTML=`
+  <div class="test-top">
+    <div class="test-stag">${s.fn} ${s.ln}</div>
+    <div class="test-prog-wrap">
+      <div class="test-prog-lbl">Question ${testIdx+1} / ${testQ.length}</div>
+      <div class="prog-bg"><div class="prog-fill" style="width:${pct}%"></div></div>
+    </div>
+  </div>
+  <div class="test-body">
+    ${catH}
+    <div class="timer-wrap"><div class="timer-bg"><div class="timer-fill" id="tfill" style="width:100%"></div></div></div>
+    <div class="q-num">Question ${testIdx+1}</div>
+    <div class="q-text">${q.inst}</div>
+    ${stimH}
+    <div id="ans-area">${ansH}</div>
+    <div id="fb" style="display:none" class="feedback"></div>
+    <div class="test-nav">
+      <button class="btn-next" id="nxt" disabled onclick="nextQ()">
+        ${testIdx+1<testQ.length?"Suivant →":"Terminer ✓"}
+      </button>
+    </div>
+  </div>`;
+
+  if(q.qt==="text") setTimeout(()=>{const t=document.getElementById("ta");if(t)t.focus();},50);
+  runTimer(q);
+}
+
+function runTimer(q){
+  const total=q.tl*1000; let elapsed=0;
+  timerInt=setInterval(()=>{
+    elapsed+=100;
+    const pct=Math.max(0,100-elapsed/total*100);
+    const bar=document.getElementById("tfill");
+    if(bar){bar.style.width=pct+"%";bar.style.background=pct<30?"#ef4444":pct<60?"#f59e0b":"var(--primary)";}
+    if(elapsed>=total&&!ansGiven){clearInterval(timerInt);timeOut(q);}
+  },100);
+}
+
+function timeOut(q){
+  const t=(Date.now()-tStart)/1000;
+  testAns.push({qid:q.id,type:q.type,ok:false,t:q.tl,tl:q.tl});
+  ansGiven=true; feedback(false,"⏰ Temps écoulé !"); disableAll();
+  document.getElementById("nxt").disabled=false;
+}
+
+function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,"&quot;");}
+
+function pickChoice(btn,chosen,correct,qid){
+  if(ansGiven) return;
+  ansGiven=true; clearInterval(timerInt);
+  const t=(Date.now()-tStart)/1000;
+  const q=testQ.find(x=>x.id===qid);
+  const ok=chosen===correct;
+  testAns.push({qid,type:q.type,ok,t,tl:q.tl});
+  document.querySelectorAll(".ch-btn").forEach(b=>{
+    b.disabled=true;
+    if(b.textContent.trim()===correct) b.classList.add("correct");
+    if(b===btn&&!ok) b.classList.add("wrong");
+  });
+  feedback(ok,ok?"✅ Bravo !":"😊 La bonne réponse était : "+correct);
+  document.getElementById("nxt").disabled=false;
+}
+
+function pickText(qid,correct){
+  if(ansGiven) return;
+  const inp=document.getElementById("ta");
+  const val=inp?inp.value.trim().toLowerCase():"";
+  if(!val) return;
+  ansGiven=true; clearInterval(timerInt);
+  const t=(Date.now()-tStart)/1000;
+  const q=testQ.find(x=>x.id===qid);
+  const ok=val===correct.toLowerCase();
+  testAns.push({qid,type:q.type,ok,t,tl:q.tl});
+  if(inp) inp.disabled=true;
+  const nb=inp?inp.nextElementSibling:null;
+  if(nb) nb.disabled=true;
+  feedback(ok,ok?"✅ Bravo !":"😊 La bonne réponse était : "+correct);
+  document.getElementById("nxt").disabled=false;
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById("fb");
+  if(!fb) return;
+  fb.style.display="block";
+  fb.className="feedback "+(ok?"fb-ok":"fb-err");
+  fb.textContent=msg;
+}
+
+function disableAll(){
+  document.querySelectorAll(".ch-btn").forEach(b=>b.disabled=true);
+  const inp=document.getElementById("ta");if(inp)inp.disabled=true;
+}
+
+function nextQ(){testIdx++;renderQ();}
+
+/* ===================================================
+   FINISH TEST
+=================================================== */
+function finishTest(){
+  clearInterval(timerInt);
+  const sc=computeScore(testAns);
+  const s=students.find(x=>x.id===currentId);
+  s.done=true; s.ans=testAns; s.score=sc; save();
+  const stars=sc.dyR==="faible"&&sc.dcR==="faible"?"⭐⭐⭐":"⭐⭐";
+  document.getElementById("test-box").innerHTML=`
+  <div class="end-screen">
+    <div class="big-em">🎉</div>
+    <h2>Bravo ${s.fn} !</h2>
+    <p>Tu as terminé le test. Tu as très bien fait !</p>
+    <div class="stars-row">${stars}</div>
+    <p style="font-size:.82rem">Dis à ton enseignant(e) que tu as terminé. 😊</p>
+  </div>`;
+  setTimeout(backToDash,3800);
+}
+
+function backToDash(){
+  document.getElementById("student-view").classList.add("hidden");
+  document.getElementById("teacher-view").classList.remove("hidden");
+  renderList(); updateStats();
+  if(currentId){selectedId=currentId;showResult(currentId);}
+}
+
+/* ===================================================
+   MODAL
+=================================================== */
+function openModal(){document.getElementById("modal-overlay").classList.remove("hidden");}
+function closeModal(){document.getElementById("modal-overlay").classList.add("hidden");}
+function overlayClick(e){if(e.target.id==="modal-overlay")closeModal();}
+
+/* ===================================================
+   EXPORT CSV
+=================================================== */
+function exportCSV(){
+  const rows=["Prénom,Nom,Âge,Classe,Test,Risque Dyslexie,Score Dyslexie %,Risque Dyscalculie,Score Dyscalculie %"];
+  students.forEach(s=>{
+    const done=s.done?"Oui":"Non";
+    const dy=s.score?s.score.dyR:"-";
+    const dyS=s.score?Math.round(s.score.dyS*100)+"%":"-";
+    const dc=s.score?s.score.dcR:"-";
+    const dcS=s.score?Math.round(s.score.dcS*100)+"%":"-";
+    rows.push(`${s.fn},${s.ln},${s.age},${s.cls},${done},${dy},${dyS},${dc},${dcS}`);
+  });
+  const blob=new Blob([rows.join("\n")],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download="edudetect_resultats.csv";a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ===================================================
+   INIT
+=================================================== */
+document.addEventListener("DOMContentLoaded",()=>{
+  if(!students.length){
+    students=[
+      {id:"1001",fn:"Emma",ln:"Dupont",age:8,cls:"CE2",done:false,ans:[],score:null},
+      {id:"1002",fn:"Lucas",ln:"Bernard",age:9,cls:"CM1",done:false,ans:[],score:null},
+      {id:"1003",fn:"Léa",ln:"Martin",age:7,cls:"CP",done:false,ans:[],score:null},
+    ];
+    save();
+  }
+  renderList(); updateStats();
+});
+</script>
+</body>
+</html>
