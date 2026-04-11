@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Brain } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const LoginPage: React.FC = () => {
   const [role, setRole] = useState<'teacher' | 'student'>('teacher');
@@ -11,7 +13,16 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useAppContext();
+  const { t } = useI18n();
   const navigate = useNavigate();
+
+  const mapLoginError = (msg?: string) => {
+    if (!msg) return t('login.failed');
+    const normalized = msg.toLowerCase();
+    if (normalized.includes('invalid credentials')) return t('login.invalidCredentials');
+    if (normalized.includes('server error')) return t('login.serverError');
+    return msg;
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,11 +39,11 @@ const LoginPage: React.FC = () => {
       const data = await res.json();
       
       if (!res.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(mapLoginError(data.error));
       }
 
       if (data.role !== role) {
-         throw new Error(`Account is a ${data.role}, not a ${role}`);
+        throw new Error(t('login.roleMismatch', { actual: data.role, expected: role }));
       }
 
       login(data.token);
@@ -44,7 +55,7 @@ const LoginPage: React.FC = () => {
       }
 
     } catch (err: any) {
-      setErrorMsg(err.message);
+      setErrorMsg(mapLoginError(err?.message));
     } finally {
       setIsLoading(false);
     }
@@ -56,8 +67,11 @@ const LoginPage: React.FC = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center sm:text-left">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-            <p className="text-slate-500">Please enter your details to sign in.</p>
+            <div className="flex justify-center sm:justify-end mb-4">
+              <LanguageSwitcher />
+            </div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('login.welcome')}</h1>
+            <p className="text-slate-500">{t('login.subtitle')}</p>
           </div>
 
           <div className="flex p-1 bg-slate-100 rounded-lg mb-8 mx-auto sm:mx-0">
@@ -65,35 +79,35 @@ const LoginPage: React.FC = () => {
               onClick={() => setRole('teacher')}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${role === 'teacher' ? 'bg-white shadow text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
             >
-              Teacher
+              {t('roles.teacher')}
             </button>
             <button
               onClick={() => setRole('student')}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${role === 'student' ? 'bg-white shadow text-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}
             >
-              Student
+              {t('roles.student')}
             </button>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">{t('login.email')}</label>
               <input 
                 type="email" 
                 required 
                 className="input-primary" 
-                placeholder="Enter your email"
+                placeholder={t('login.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">{t('login.password')}</label>
               <input 
                 type="password" 
                 required 
                 className="input-primary" 
-                placeholder="••••••••"
+                placeholder={t('login.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -110,7 +124,7 @@ const LoginPage: React.FC = () => {
               className="w-full btn-primary h-11"
               disabled={isLoading}
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? t('login.signingIn') : t('login.signIn')}
             </button>
           </form>
         </div>
@@ -126,10 +140,10 @@ const LoginPage: React.FC = () => {
           <Brain className="w-20 h-20 mx-auto mb-8 text-indigo-100 opacity-90" />
           <h2 className="text-4xl font-extrabold mb-4 tracking-tight">NeuroCal</h2>
           <p className="text-xl text-indigo-100 font-medium tracking-wide">
-            Early screening. Better outcomes.
+            {t('login.heroTitle')}
           </p>
           <p className="mt-8 text-indigo-200">
-            Supporting educators and students in identifying and managing dyscalculia through intuitive, science-backed screening tools.
+            {t('login.heroText')}
           </p>
         </div>
       </div>

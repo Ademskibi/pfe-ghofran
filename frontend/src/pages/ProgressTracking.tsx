@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { useI18n } from '../i18n/I18nContext';
 
 const ProgressTracking: React.FC = () => {
   const { students, testSessions } = useAppContext();
+  const { t } = useI18n();
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
 
   const targetStudent = students.find(s => s._id === selectedStudentId);
@@ -12,7 +14,7 @@ const ProgressTracking: React.FC = () => {
     : [];
 
   const driHistory = studentSessions.map((ts, idx) => ({
-    name: `Test ${idx+1}`,
+    name: `${t('progress.test')} ${idx+1}`,
     date: new Date(ts.testDate).toLocaleDateString(),
     dri: Math.round(ts.dri)
   }));
@@ -36,14 +38,14 @@ const ProgressTracking: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6">
-        <h2 className="text-2xl font-bold text-slate-800">Progress Tracking</h2>
+        <h2 className="text-2xl font-bold text-slate-800">{t('progress.title')}</h2>
         <div className="w-64">
            <select 
              className="input-primary w-full shadow-sm"
              value={selectedStudentId}
              onChange={e => setSelectedStudentId(e.target.value)}
            >
-             <option value="" disabled>Select a student...</option>
+             <option value="" disabled>{t('progress.selectStudent')}</option>
              {students.map(st => (
                <option key={st._id} value={st._id}>{st.fullName}</option>
              ))}
@@ -58,12 +60,12 @@ const ProgressTracking: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                </svg>
             </div>
-            <p className="text-lg font-medium text-slate-500">Select a student above to view progress tracking</p>
+            <p className="text-lg font-medium text-slate-500">{t('progress.empty')}</p>
          </div>
       ) : (
          <div className="space-y-6">
             <div className="card">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4 tracking-tight">DRI Trend Over Time</h3>
+              <h3 className="text-lg font-semibold text-slate-800 mb-4 tracking-tight">{t('progress.driTrend')}</h3>
               {studentSessions.length > 0 ? (
                 <div className="h-72 w-full">
                   <ResponsiveContainer width="100%" height="100%">
@@ -77,28 +79,28 @@ const ProgressTracking: React.FC = () => {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="h-40 flex items-center justify-center text-slate-400">No assessments recorded for this student.</div>
+                <div className="h-40 flex items-center justify-center text-slate-400">{t('progress.noAssessments')}</div>
               )}
             </div>
 
             {studentSessions.length > 1 && (
                <div className="card">
-                 <h3 className="text-lg font-semibold text-slate-800 mb-4 tracking-tight">Domain Comparison (First vs Latest)</h3>
+                 <h3 className="text-lg font-semibold text-slate-800 mb-4 tracking-tight">{t('progress.domainComparison')}</h3>
                  <div className="h-80 w-full">
                    <ResponsiveContainer width="100%" height="100%">
                      <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                        <PolarGrid stroke="#e2e8f0" />
                        <PolarAngleAxis dataKey="domain" tick={{fill: '#64748b', fontSize: 11}} />
                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{fill: '#cbd5e1', fontSize: 10}} />
-                       <Radar name="First Assessment" dataKey="first" stroke="#94a3b8" fill="#94a3b8" fillOpacity={0.2} />
-                       <Radar name="Latest Assessment" dataKey="latest" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.4} />
+                        <Radar name={t('progress.firstAssessment')} dataKey="first" stroke="#94a3b8" fill="#94a3b8" fillOpacity={0.2} />
+                        <Radar name={t('progress.latestAssessment')} dataKey="latest" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.4} />
                        <Tooltip />
                      </RadarChart>
                    </ResponsiveContainer>
                  </div>
                  <div className="flex justify-center gap-6 mt-4">
-                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-400"></div><span className="text-sm text-slate-600 font-medium">First Assessment</span></div>
-                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-indigo-600"></div><span className="text-sm text-slate-600 font-medium">Latest Assessment</span></div>
+                      <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-400"></div><span className="text-sm text-slate-600 font-medium">{t('progress.firstAssessment')}</span></div>
+                      <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-indigo-600"></div><span className="text-sm text-slate-600 font-medium">{t('progress.latestAssessment')}</span></div>
                  </div>
                </div>
             )}

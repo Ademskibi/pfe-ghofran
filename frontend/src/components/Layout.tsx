@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { LayoutDashboard, Users, LineChart, Brain, LogOut, User, FileText } from 'lucide-react';
+import { LayoutDashboard, Users, LineChart, Brain, LogOut } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Layout: React.FC = () => {
   const { currentUser, logout } = useAppContext();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
@@ -15,13 +18,13 @@ const Layout: React.FC = () => {
 
   const navItems = currentUser?.role === 'teacher' 
     ? [
-        { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { path: '/class-overview', label: 'Class Overview', icon: Users },
-        { path: '/progress-tracking', label: 'Progress Tracking', icon: LineChart },
+        { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
+        { path: '/class-overview', label: t('nav.classOverview'), icon: Users },
+        { path: '/progress-tracking', label: t('nav.progressTracking'), icon: LineChart },
         // { path: '/new-assessment', label: 'New Assessment', icon: Brain } // Assuming handled from Dashboard or Student detail
       ]
     : [
-        { path: '/student-portal', label: 'My Portal', icon: Brain },
+        { path: '/student-portal', label: t('nav.myPortal'), icon: Brain },
         /* { path: '/my-progress', label: 'My Progress', icon: LineChart } */
       ];
 
@@ -57,7 +60,7 @@ const Layout: React.FC = () => {
               }
             >
               <item.icon className="w-5 h-5 flex-shrink-0" />
-              {isSidebarExpanded && <span className="ml-3 text-sm">{item.label}</span>}
+                {isSidebarExpanded && <span className="ms-3 text-sm">{item.label}</span>}
             </NavLink>
           ))}
         </nav>
@@ -69,9 +72,10 @@ const Layout: React.FC = () => {
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm flex-shrink-0">
           <h1 className="text-xl font-semibold text-slate-800 capitalize">
              {/* Simple hack to set a title - could use a custom hook */}
-             Portal
+             {t('common.portal')}
           </h1>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold relative group">
                 {userInitial}
@@ -80,7 +84,7 @@ const Layout: React.FC = () => {
             <button 
               onClick={handleLogout}
               className="flex items-center text-slate-500 hover:text-rose-600 transition-colors p-2 rounded-full hover:bg-rose-50"
-              title="Logout"
+              title={t('nav.logout')}
             >
               <LogOut className="w-5 h-5" />
             </button>

@@ -13,7 +13,26 @@ const authenticate = require('./middleware/authenticate');
 
 const app = express();
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'] }));
+const allowedOrigins = new Set([
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5174',
+]);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow non-browser requests and same-origin tools without Origin header.
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.has(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+  }),
+);
 app.use(express.json());
 
 connectDB();
