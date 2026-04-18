@@ -1,0 +1,51 @@
+.mini-games-page {
+  min-height: calc(100vh - 3rem);
+}
+
+.pizza-disc {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  border: 12px solid #f7d1a4;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,0.65);
+}
+
+.pizza-disc::after {
+  content: '';
+  position: absolute;
+  inset: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7), transparent 20%), radial-gradient(circle at 70% 40%, rgba(255,255,255,0.45), transparent 14%), radial-gradient(circle at 50% 70%, rgba(255,255,255,0.4), transparent 18%);
+}
+
+.pizza-slice-topper {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #d94d3c;
+  position: absolute;
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.35);
+}
+
+.pizza-slice-topper:nth-child(1) { top: 24%; left: 35%; }
+.pizza-slice-topper:nth-child(2) { top: 40%; left: 60%; }
+.pizza-slice-topper:nth-child(3) { top: 60%; left: 30%; }
+.pizza-slice-topper:nth-child(4) { top: 65%; left: 55%; }
+
+.group-bubble {
+  min-height: 120px;
+}
+
+.group-bubble .element { margin: 6px; }
+
+@keyframes floatUp {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+.bouncing {
+  animation: floatUp 1.6s ease-in-out infinite;
+}

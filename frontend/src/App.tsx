@@ -11,6 +11,9 @@ import ClassOverview from './pages/ClassOverview';
 import StudentDetail from './pages/StudentDetail';
 import ProgressTracking from './pages/ProgressTracking';
 import StudentPortal from './pages/StudentPortal';
+import MiniGamesHome from './modules/miniGames/pages/MiniGamesHome';
+import PizzaSlicesGame from './modules/miniGames/pages/PizzaSlicesGame';
+import NumberElementsGame from './modules/miniGames/pages/NumberElementsGame';
 
 const App: React.FC = () => {
   return (
@@ -38,6 +41,15 @@ const App: React.FC = () => {
              {/* Student Route */}
              <Route path="/student-portal" element={
                 <ProtectedRoute allowedRoles={['student']}><StudentPortal /></ProtectedRoute>
+             } />
+             <Route path="/mini-games" element={
+                <ProtectedRoute allowedRoles={['student']}><MiniGamesHome /></ProtectedRoute>
+             } />
+             <Route path="/mini-games/pizza-slices" element={
+                <ProtectedRoute allowedRoles={['student']}><PizzaSlicesGame /></ProtectedRoute>
+             } />
+             <Route path="/mini-games/number-match" element={
+                <ProtectedRoute allowedRoles={['student']}><NumberElementsGame /></ProtectedRoute>
              } />
           </Route>
           

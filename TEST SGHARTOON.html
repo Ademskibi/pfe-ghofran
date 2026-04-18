@@ -463,12 +463,18 @@ function computeScore(answers){
    TEST LAUNCH
 =================================================== */
 function launchTest(id){
+  clearInterval(timerInt);
   currentId=id;
   testQ=[...Q].sort(()=>Math.random()-.5);
   testIdx=0; testAns=[];
+  ansGiven=false;
   document.getElementById("teacher-view").classList.add("hidden");
   document.getElementById("student-view").classList.remove("hidden");
   const s=students.find(x=>x.id===id);
+  if(!s){
+    backToDash();
+    return;
+  }
   showWelcome(s);
 }
 
@@ -492,6 +498,7 @@ function renderQ(){
   ansGiven=false; tStart=Date.now();
   const pct=((testIdx)/testQ.length*100).toFixed(0);
   const s=students.find(x=>x.id===currentId);
+  if(!s){backToDash();return;}
 
   // Stimulus HTML
   let stimH="";
@@ -553,7 +560,7 @@ function runTimer(q){
 
 function timeOut(q){
   const t=(Date.now()-tStart)/1000;
-  testAns.push({qid:q.id,type:q.type,ok:false,t:q.tl,tl:q.tl});
+  testAns.push({qid:q.id,type:q.type,ok:false,t,tl:q.tl});
   ansGiven=true; feedback(false,"⏰ Temps écoulé !"); disableAll();
   document.getElementById("nxt").disabled=false;
 }
@@ -615,6 +622,7 @@ function finishTest(){
   clearInterval(timerInt);
   const sc=computeScore(testAns);
   const s=students.find(x=>x.id===currentId);
+  if(!s){backToDash();return;}
   s.done=true; s.ans=testAns; s.score=sc; save();
   const stars=sc.dyR==="faible"&&sc.dcR==="faible"?"⭐⭐⭐":"⭐⭐";
   document.getElementById("test-box").innerHTML=`

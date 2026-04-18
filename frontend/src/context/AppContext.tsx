@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Student, TestSession, InterventionStrategy, UserToken } from '../types';
+import { Student, TestSession, InterventionStrategy, UserToken, MiniGameProgress } from '../types';
 
 interface AppContextType {
   students: Student[];
   testSessions: TestSession[];
   interventionStrategies: InterventionStrategy[];
   currentUser: UserToken | null;
+  miniGameProgress: MiniGameProgress[];
   authToken: string | null;
   loading: boolean;
   error: string | null;
@@ -18,6 +19,14 @@ interface AppContextType {
   fetchTestSessions: (studentId?: string) => Promise<void>;
   createTestSession: (data: Partial<TestSession>) => Promise<void>;
   fetchInterventions: () => Promise<void>;
+  fetchMiniGameProgress: (studentId?: string) => Promise<void>;
+  saveMiniGameProgress: (progress: {
+    gameType: 'pizza-slices' | 'number-match';
+    score: number;
+    level?: string;
+    completedRounds: number;
+    studentId?: string;
+  }) => Promise<void>;
   fetchFullReport: (studentId?: string) => Promise<any>;
 }
 
@@ -27,6 +36,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [students, setStudents] = useState<Student[]>([]);
   const [testSessions, setTestSessions] = useState<TestSession[]>([]);
   const [interventionStrategies, setInterventionStrategies] = useState<InterventionStrategy[]>([]);
+  const [miniGameProgress, setMiniGameProgress] = useState<MiniGameProgress[]>([]);
   const [currentUser, setCurrentUser] = useState<UserToken | null>(null);
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -64,6 +74,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         fetchInterventions();
       } else if (currentUser.role === 'student' && currentUser.studentId) {
         fetchTestSessions(currentUser.studentId);
+        fetchMiniGameProgress(currentUser.studentId);
       }
     }
   }, [authToken, currentUser]);
@@ -83,6 +94,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setStudents([]);
     setTestSessions([]);
     setInterventionStrategies([]);
+    setMiniGameProgress([]);
   };
 
   const getHeaders = () => {
@@ -206,6 +218,48 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const fetchMiniGameProgress = async (studentId?: string) => {
+    if (!authToken || !currentUser) return;
+    const targetId = studentId || currentUser.studentId || currentUser.userId;
+    if (!targetId) return;
+
+    try {
+      const query = currentUser.role === 'teacher' ? `?studentId=${targetId}` : '';
+      const res = await fetch(`${API_URL}/minigames/progress${query}`, { headers: getHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setMiniGameProgress(data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const saveMiniGameProgress = async (progress: {
+    gameType: 'pizza-slices' | 'number-match';
+    score: number;
+    level?: string;
+    completedRounds: number;
+    studentId?: string;
+  }) => {
+    if (!authToken || !currentUser) return;
+    const targetId = currentUser.role === 'teacher' ? progress.studentId : currentUser.studentId;
+    if (!targetId) return;
+
+    try {
+      const res = await fetch(`${API_URL}/minigames/progress`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ ...progress, studentId: targetId }),
+      });
+      if (res.ok) {
+        await fetchMiniGameProgress(targetId);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchFullReport = async (studentId?: string) => {
     try {
       const url = studentId ? `${API_URL}/reports/full?studentId=${studentId}` : `${API_URL}/reports/full`;
@@ -227,6 +281,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         testSessions,
         interventionStrategies,
         currentUser,
+        miniGameProgress,
         authToken,
         loading,
         error,
@@ -239,6 +294,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         fetchTestSessions,
         createTestSession,
         fetchInterventions,
+        fetchMiniGameProgress,
+        saveMiniGameProgress,
         fetchFullReport,
       }}
     >

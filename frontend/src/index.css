@@ -2,14 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light;
+  --color-principal: #F28C38;
+  --color-fox: #F47C20;
+  --color-fox-dark: #7A3F14;
+  --color-fox-detail: #6B3A1E;
+  --color-muzzle: #F4EFEA;
+  --color-black: #1A1A1A;
+  --color-glasses: #3ED1C8;
+  --color-ui: #2FA8CC;
+  --color-ui-dark: #1F6F8B;
+  --color-yellow-button: #FFD500;
+  --color-bg: #F8FAFB;
+  --color-bg-shape: #DDE5EA;
+  --color-surface: #FFFFFF;
+  --color-text: #1A1A1A;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  body {
+    @apply min-h-screen antialiased;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}
+
 @layer components {
-  .card { @apply bg-white rounded-xl shadow-sm border border-slate-100 p-5; }
-  .input-primary { @apply w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500; }
-  .btn-primary { @apply bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
-  .btn-secondary { @apply bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
-  .btn-danger { @apply bg-rose-600 hover:bg-rose-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
-  .badge-tier-0 { @apply bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-full text-xs font-medium; }
-  .badge-tier-1 { @apply bg-emerald-100 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-xs font-medium; }
-  .badge-tier-2 { @apply bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full text-xs font-medium; }
-  .badge-tier-3 { @apply bg-rose-100 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full text-xs font-medium; }
+  .card { @apply bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-bg-shape)] p-5; }
+  .input-primary { @apply w-full border border-[var(--color-bg-shape)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-ui)] focus:border-[var(--color-ui)]; }
+  .btn-primary { @apply bg-[var(--color-yellow-button)] hover:bg-[#e6c500] text-[var(--color-black)] rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
+  .btn-secondary { @apply bg-[var(--color-bg-shape)] hover:bg-[#ccd7de] text-[var(--color-text)] rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
+  .btn-danger { @apply bg-[#d95d2a] hover:bg-[#c05426] text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
+  .badge-tier-0 { @apply bg-[var(--color-bg-shape)] text-[var(--color-text)] border border-[var(--color-bg-shape)] px-2 py-0.5 rounded-full text-xs font-medium; }
+  .badge-tier-1 { @apply bg-[#fbe6cf] text-[var(--color-fox-dark)] border border-[#f6d4ab] px-2 py-0.5 rounded-full text-xs font-medium; }
+  .badge-tier-2 { @apply bg-[#fff3b5] text-[var(--color-fox-dark)] border border-[#ffe57d] px-2 py-0.5 rounded-full text-xs font-medium; }
+  .badge-tier-3 { @apply bg-[#f6c4a6] text-[var(--color-fox-dark)] border border-[#f1a270] px-2 py-0.5 rounded-full text-xs font-medium; }
+
+  .bg-app-background { background-color: var(--color-bg); }
+  .bg-panel { background-color: var(--color-surface); }
+  .bg-panel-soft { background-color: var(--color-bg-shape); }
+  .bg-brand { background-color: var(--color-ui); }
+  .bg-brand-dark { background-color: var(--color-ui-dark); }
+  .text-brand-dark { color: var(--color-ui-dark); }
+  .text-brand { color: var(--color-ui); }
+  .bg-fox { background-color: var(--color-fox); }
+  .bg-fox-soft { background-color: var(--color-principal); }
+  .text-fox-dark { color: var(--color-fox-dark); }
+  .bg-yellow-brand { background-color: var(--color-yellow-button); }
+  .text-yellow-brand { color: var(--color-yellow-button); }
+  .border-panel { border-color: var(--color-bg-shape); }
+  .shadow-brand { box-shadow: 0 20px 40px rgba(47,168,204,0.12); }
+  .shadow-fox { box-shadow: 0 18px 40px rgba(244,124,32,0.18); }
 }

@@ -1,29 +1,32 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { CheckCircle, Brain } from 'lucide-react';
+import { useTranslation } from '../i18n';
+import { Brain, Gamepad2, Star, Smile } from 'lucide-react';
 
 const DOMAINS = [
-  "Number sense",
-  "Counting accuracy",
-  "Arithmetic fluency",
-  "Place value understanding",
-  "Word problem solving",
-  "Number line estimation",
-  "Pattern recognition",
-  "Mental calculation",
-  "Symbol recognition",
-  "Time and measurement"
+  'Number sense',
+  'Counting accuracy',
+  'Arithmetic fluency',
+  'Place value understanding',
+  'Word problem solving',
+  'Number line estimation',
+  'Pattern recognition',
+  'Mental calculation',
+  'Symbol recognition',
+  'Time and measurement'
 ];
 
 const StudentPortal: React.FC = () => {
   const { currentUser, testSessions, createTestSession } = useAppContext();
-  
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [currentQ, setCurrentQ] = useState(0);
   const [scores, setScores] = useState<number[]>(new Array(10).fill(50));
   const [testPhase, setTestPhase] = useState<'intro' | 'testing' | 'success'>('intro');
 
-  const mySessions = [...testSessions].sort((a,b) => new Date(b.testDate).getTime() - new Date(a.testDate).getTime());
+  const mySessions = [...testSessions].sort((a, b) => new Date(b.testDate).getTime() - new Date(a.testDate).getTime());
   const latestSession = mySessions.length > 0 ? mySessions[0] : null;
 
   const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,13 +37,13 @@ const StudentPortal: React.FC = () => {
 
   const nextQ = () => {
     if (currentQ < 9) {
-      setCurrentQ(prev => prev + 1);
+      setCurrentQ((prev) => prev + 1);
     }
   };
 
   const prevQ = () => {
     if (currentQ > 0) {
-      setCurrentQ(prev => prev - 1);
+      setCurrentQ((prev) => prev - 1);
     }
   };
 
@@ -68,112 +71,148 @@ const StudentPortal: React.FC = () => {
     }, 3000);
   };
 
-  const radarData = latestSession?.domains.map(d => ({
-    domain: d.name,
-    score: d.score,
-    fullMark: 100
-  })) || [];
-
-  const driHistory = [...mySessions].reverse().map((ts, idx) => ({
-    name: `Test ${idx+1}`,
-    dri: Math.round(ts.dri)
-  }));
-
-
   return (
-    <div className="max-w-4xl mx-auto space-y-6 flex flex-col items-center mb-10">
-      
-      <div className="w-full card bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border-0">
-         <h2 className="text-2xl font-bold">Student Portal</h2>
-         <p className="text-indigo-100 mt-1">Ready for your assessment? Do your best!</p>
+    <div className="max-w-4xl mx-auto space-y-6 flex flex-col items-center mb-10 px-4 sm:px-6">
+      <div className="w-full rounded-[32px] bg-gradient-to-r from-[var(--color-ui)] via-[var(--color-glasses)] to-[var(--color-fox)] p-8 shadow-2xl text-white">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/15 text-white shadow-lg shadow-black/10">
+            <Gamepad2 className="h-10 w-10" />
+          </div>
+          <p className="text-sm uppercase tracking-[0.35em]">{t('studentPortal.studentPortal')}</p>
+          <h1 className="text-4xl font-extrabold tracking-tight">{t('studentPortal.readyToPlay')}</h1>
+          <p className="max-w-xl text-base text-[var(--color-muzzle)]">{t('studentPortal.bigButtons')}</p>
+        </div>
       </div>
 
-      {testPhase === 'intro' && (
-        <div className="w-full card shadow border-t-4 border-t-indigo-500 flex flex-col items-center text-center p-12">
-           <Brain className="w-16 h-16 text-indigo-500 mb-6" />
-           <h3 className="text-2xl font-bold text-slate-800 mb-2">New Assessment</h3>
-           <p className="text-slate-500 mb-8 max-w-md">You will answer 10 questions to assess different math skills. Use the slider to rate your confidence or score in each area.</p>
-           <button onClick={() => setTestPhase('testing')} className="btn-primary text-lg px-8 py-3 rounded-full shadow-md hover:shadow-lg transition">
-             Start Test
-           </button>
+      <div className="w-full grid gap-4 lg:grid-cols-2">
+        <button
+          type="button"
+          onClick={() => navigate('/mini-games')}
+          className="group rounded-[32px] bg-brand px-8 py-10 text-left shadow-xl shadow-brand transition-all duration-300 hover:-translate-y-1 hover:scale-105 active:scale-95"
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-[var(--color-fox)] shadow-lg">
+              <span className="text-3xl">🎮</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white/80">{t('studentPortal.primaryAction')}</p>
+              <h2 className="mt-3 text-3xl font-bold text-white">{t('studentPortal.playMiniGames')}</h2>
+            </div>
+          </div>
+          <p className="mt-6 max-w-[18rem] text-white/90">{t('studentPortal.jumpIntoFun')}</p>
+        </button>
+
+        <div className="rounded-[32px] bg-panel p-8 shadow-xl border border-panel">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[var(--color-fox-dark)]">{t('studentPortal.quickPlay')}</p>
+              <h2 className="mt-3 text-3xl font-bold text-[var(--color-fox-dark)]">{t('studentPortal.startTest')}</h2>
+            </div>
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-panel-soft text-[var(--color-fox-dark)] shadow-sm">
+              <span className="text-2xl">⭐</span>
+            </div>
+          </div>
+          <p className="mt-5 text-[var(--color-fox-dark)]">{t('studentPortal.letsPlay')}</p>
+          <button
+            type="button"
+            onClick={() => setTestPhase('testing')}
+            className="mt-8 w-full rounded-3xl bg-[var(--color-yellow-button)] px-6 py-5 text-xl font-bold text-[var(--color-black)] shadow-lg shadow-[rgba(255,213,0,0.3)] transition-all duration-300 hover:scale-105 active:scale-95"
+          >
+            {t('studentPortal.startTest')}
+          </button>
         </div>
-      )}
+      </div>
 
       {testPhase === 'testing' && (
-        <div className="w-full card shadow border border-indigo-100">
-           <div className="w-full h-2 bg-slate-100 rounded-full mb-8 overflow-hidden">
-             <div className="h-full bg-indigo-500 transition-all duration-300" style={{ width: `${((currentQ + 1) / 10) * 100}%` }}></div>
-           </div>
+        <div className="w-full rounded-[32px] bg-panel p-8 shadow-2xl border border-panel">
+          <div className="flex items-center justify-between gap-4 mb-8">
+            <div>
+              <p className="text-sm uppercase tracking-[0.35em] text-[var(--color-fox-dark)]">{t('studentPortal.question')} {currentQ + 1} / 10</p>
+              <h2 className="mt-2 text-3xl font-bold text-[var(--color-fox-dark)]">{t('studentPortal.chooseNumber')}</h2>
+            </div>
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[rgba(47,168,204,0.12)] text-[var(--color-ui-dark)] shadow-sm">
+              <Star className="h-8 w-8" />
+            </div>
+          </div>
 
-           <div className="text-center mb-8">
-             <span className="text-sm font-bold tracking-wide text-indigo-600 uppercase">Question {currentQ + 1} of 10</span>
-             <h3 className="text-2xl font-bold text-slate-800 mt-2">{DOMAINS[currentQ]}</h3>
-           </div>
+          <div className="rounded-[32px] bg-panel-soft p-8 text-center shadow-inner border border-panel">
+            <p className="text-5xl font-extrabold text-[var(--color-ui-dark)]">{scores[currentQ]}</p>
+            <p className="mt-3 text-[var(--color-fox-dark)]">{t('studentPortal.moveSlider')}</p>
+          </div>
 
-           <div className="py-12 px-8 flex flex-col items-center">
-              <span className="text-4xl font-extrabold text-indigo-600 mb-6">{scores[currentQ]}</span>
-              <input 
-                type="range" 
-                min="0" max="100" 
-                value={scores[currentQ]} 
-                onChange={handleSlider}
-                className="w-full max-w-lg h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-              />
-              <div className="w-full max-w-lg flex justify-between mt-3 text-sm font-medium text-slate-400">
-                <span>0 (Low)</span>
-                <span>100 (High)</span>
-              </div>
-           </div>
+          <div className="mt-8">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={scores[currentQ]}
+              onChange={handleSlider}
+              className="w-full accent-[var(--color-ui)]"
+            />
+            <div className="mt-4 flex justify-between text-sm text-[var(--color-fox-dark)]">
+              <span>{t('studentPortal.low')}</span>
+              <span>{t('studentPortal.high')}</span>
+            </div>
+          </div>
 
-           <div className="flex flex-col sm:flex-row justify-between pt-6 border-t border-slate-100">
-             <button onClick={prevQ} disabled={currentQ === 0} className="btn-secondary disabled:opacity-50 mt-2 sm:mt-0 order-2 sm:order-1">Previous</button>
-             {currentQ < 9 ? (
-               <button onClick={nextQ} className="btn-primary order-1 sm:order-2">Next Question</button>
-             ) : (
-               <button onClick={handleSubmit} className="btn-primary bg-emerald-600 hover:bg-emerald-700 shadow-md font-bold order-1 sm:order-2">Submit Test</button>
-             )}
-           </div>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+            <button
+              type="button"
+              onClick={prevQ}
+              disabled={currentQ === 0}
+              className="w-full rounded-3xl bg-panel-soft px-6 py-4 text-base font-semibold text-[var(--color-fox-dark)] transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t('studentPortal.previous')}
+            </button>
+            {currentQ < 9 ? (
+              <button
+                type="button"
+                onClick={nextQ}
+                className="w-full rounded-3xl bg-brand px-6 py-4 text-base font-bold text-white shadow-lg shadow-brand transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                {t('studentPortal.next')}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="w-full rounded-3xl bg-[var(--color-yellow-button)] px-6 py-4 text-base font-bold text-[var(--color-black)] shadow-lg shadow-[rgba(255,213,0,0.3)] transition-all duration-300 hover:scale-105 active:scale-95"
+              >
+                {t('studentPortal.finish')}
+              </button>
+            )}
+          </div>
         </div>
       )}
 
       {testPhase === 'success' && (
-        <div className="w-full card shadow p-16 flex flex-col items-center text-center animate-pulse">
-          <CheckCircle className="w-20 h-20 text-emerald-500 mb-6" />
-          <h3 className="text-2xl font-bold text-slate-800 mb-2">Results Submitted!</h3>
-          <p className="text-slate-500">Your results have been sent to your teacher. Redirecting...</p>
+        <div className="w-full rounded-[32px] bg-[rgba(62,209,200,0.15)] p-10 shadow-2xl border border-[var(--color-glasses)] text-center">
+          <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-white text-[var(--color-ui)] shadow-lg">
+            <Smile className="h-12 w-12" />
+          </div>
+          <h2 className="mt-6 text-3xl font-bold text-[var(--color-ui-dark)]">{t('studentPortal.greatJob')}</h2>
+          <p className="mt-3 text-[var(--color-fox-dark)]">{t('studentPortal.answersSaved')}</p>
         </div>
       )}
 
-      {testPhase === 'intro' && mySessions.length > 0 && (
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          <div className="card">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">Latest Domain Profile</h3>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                  <PolarGrid stroke="#e2e8f0" />
-                  <PolarAngleAxis dataKey="domain" tick={{fill: '#64748b', fontSize: 10}} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{fill: '#94a3b8', fontSize: 10}} />
-                  <Radar name="Score" dataKey="score" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.3} />
-                  <Tooltip />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-          <div className="card">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">DRI History</h3>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={driHistory}>
-                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                   <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                   <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
-                   <Tooltip cursor={{ fill: '#f8fafc' }} />
-                   <Line type="monotone" dataKey="dri" stroke="#10b981" strokeWidth={3} activeDot={{ r: 8 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+      <div className="w-full grid gap-4 md:grid-cols-2">
+        <div className="rounded-[32px] bg-panel p-6 shadow-lg border border-panel">
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[var(--color-fox-dark)]">{t('studentPortal.sticker')}</p>
+          <p className="mt-4 text-2xl font-bold text-[var(--color-fox-dark)]">⭐ {t('studentPortal.superStar')}</p>
+          <p className="mt-2 text-[var(--color-fox-dark)]">{t('studentPortal.youreDoingAmazing')}</p>
+        </div>
+        <div className="rounded-[32px] bg-panel p-6 shadow-lg border border-panel">
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-[var(--color-fox-dark)]">{t('studentPortal.mood')}</p>
+          <p className="mt-4 text-2xl font-bold text-[var(--color-fox-dark)]">🎈 {t('studentPortal.playful')}</p>
+          <p className="mt-2 text-[var(--color-fox-dark)]">{t('studentPortal.happyDay')}</p>
+        </div>
+      </div>
+
+      {latestSession && (
+        <div className="w-full rounded-[32px] bg-gradient-to-r from-[var(--color-bg-shape)] via-[var(--color-surface)] to-[var(--color-glasses)] p-6 shadow-xl border border-panel">
+          <p className="text-sm text-[var(--color-fox-dark)]">{t('studentPortal.lastPlaySession')}</p>
+          <p className="mt-3 text-xl font-semibold text-[var(--color-fox-dark)]">{t('studentPortal.score', { score: Math.round(latestSession.dri) })}</p>
+          <p className="mt-2 text-[var(--color-fox-dark)]">{t('studentPortal.niceWork')}</p>
         </div>
       )}
     </div>

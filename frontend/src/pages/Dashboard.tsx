@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
+import { useTranslation } from '../i18n';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Plus, Users, Brain, Activity, Calendar } from 'lucide-react';
 import { Student } from '../types';
 
 const Dashboard: React.FC = () => {
   const { students, testSessions, addStudent } = useAppContext();
+  const { t } = useTranslation();
   const [showAddModal, setShowAddModal] = useState(false);
 
   // Stats
@@ -66,9 +68,9 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-slate-800">Teacher Dashboard</h2>
+        <h2 className="text-2xl font-bold text-slate-800">{t('dashboard.teacherDashboard')}</h2>
         <button className="btn-primary flex items-center gap-2" onClick={() => setShowAddModal(true)}>
-          <Plus className="w-4 h-4" /> Add Student
+          <Plus className="w-4 h-4" /> {t('dashboard.addStudent')}
         </button>
       </div>
 
@@ -76,25 +78,25 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="card flex flex-col justify-center">
            <div className="text-slate-500 text-sm font-medium mb-1 flex items-center gap-2">
-             <Users className="w-4 h-4" /> Total Students
+             <Users className="w-4 h-4" /> {t('dashboard.totalStudents')}
            </div>
            <div className="text-3xl font-bold text-slate-800">{students.length}</div>
         </div>
         <div className="card flex flex-col justify-center border-l-4 border-l-emerald-500">
            <div className="text-slate-500 text-sm font-medium mb-1 flex items-center gap-2">
-             <Activity className="w-4 h-4 text-emerald-500" /> Active
+             <Activity className="w-4 h-4 text-emerald-500" /> {t('dashboard.active')}
            </div>
            <div className="text-3xl font-bold text-emerald-700">{activeStudents}</div>
         </div>
         <div className="card flex flex-col justify-center border-l-4 border-l-rose-500">
            <div className="text-slate-500 text-sm font-medium mb-1 flex items-center gap-2">
-             <Brain className="w-4 h-4 text-rose-500" /> At-Risk
+             <Brain className="w-4 h-4 text-rose-500" /> {t('dashboard.atRisk')}
            </div>
            <div className="text-3xl font-bold text-rose-700">{atRiskCount}</div>
         </div>
         <div className="card flex flex-col justify-center border-l-4 border-l-indigo-500">
            <div className="text-slate-500 text-sm font-medium mb-1 flex items-center gap-2">
-             <Calendar className="w-4 h-4 text-indigo-500" /> Assessments (Month)
+             <Calendar className="w-4 h-4 text-indigo-500" /> {t('dashboard.assessmentsMonth')}
            </div>
            <div className="text-3xl font-bold text-indigo-700">{currentMonthSessions}</div>
         </div>
@@ -103,7 +105,7 @@ const Dashboard: React.FC = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
-          <h3 className="text-lg font-semibold mb-4 text-slate-800">DRI Trend (Recent Sessions)</h3>
+          <h3 className="text-lg font-semibold mb-4 text-slate-800">{t('dashboard.driTrend')}</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={last10} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -118,7 +120,7 @@ const Dashboard: React.FC = () => {
         </div>
         
         <div className="card">
-          <h3 className="text-lg font-semibold mb-4 text-slate-800">Tier Distribution (All Sessions)</h3>
+          <h3 className="text-lg font-semibold mb-4 text-slate-800">{t('dashboard.tierDistribution')}</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -137,16 +139,16 @@ const Dashboard: React.FC = () => {
 
       {/* Recent Sessions Table */}
       <div className="card">
-        <h3 className="text-lg font-semibold mb-4 text-slate-800">Recent Sessions</h3>
+        <h3 className="text-lg font-semibold mb-4 text-slate-800">{t('dashboard.recentSessions')}</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 text-slate-500 text-sm font-medium border-b border-slate-200">
-                <th className="py-3 px-4 rounded-tl-lg">Student Name</th>
-                <th className="py-3 px-4">Tier</th>
-                <th className="py-3 px-4">DRI</th>
-                <th className="py-3 px-4">Date</th>
-                <th className="py-3 px-4 rounded-tr-lg">Condition</th>
+                <th className="py-3 px-4 rounded-tl-lg">{t('dashboard.studentName')}</th>
+                <th className="py-3 px-4">{t('dashboard.tier')}</th>
+                <th className="py-3 px-4">{t('dashboard.latestDri')}</th>
+                <th className="py-3 px-4">{t('dashboard.date')}</th>
+                <th className="py-3 px-4 rounded-tr-lg">{t('dashboard.condition')}</th>
               </tr>
             </thead>
             <tbody className="text-sm">
@@ -154,9 +156,9 @@ const Dashboard: React.FC = () => {
                 const st = students.find(s => s._id === session.studentId);
                 return (
                   <tr key={session._id} className="border-b border-slate-100 hover:bg-slate-50 last:border-0 transition-colors">
-                    <td className="py-3 px-4 font-medium text-slate-700">{st ? st.fullName : 'Unknown'}</td>
+                    <td className="py-3 px-4 font-medium text-slate-700">{st ? st.fullName : t('common.unknown')}</td>
                     <td className="py-3 px-4">
-                      <span className={`badge-tier-${session.tier}`}>Tier {session.tier}</span>
+                      <span className={`badge-tier-${session.tier}`}>{t(`dashboard.tier${session.tier}`)}</span>
                     </td>
                     <td className="py-3 px-4 font-semibold text-slate-700">{Math.round(session.dri)}</td>
                     <td className="py-3 px-4 text-slate-500">{new Date(session.testDate).toLocaleDateString()}</td>
@@ -166,7 +168,7 @@ const Dashboard: React.FC = () => {
               })}
               {recent10.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-500 font-medium">No sessions recorded yet</td>
+                  <td colSpan={5} className="py-8 text-center text-slate-500 font-medium">{t('common.noSessions')}</td>
                 </tr>
               )}
             </tbody>
@@ -179,57 +181,57 @@ const Dashboard: React.FC = () => {
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm shadow-xl z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
              <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-               <h3 className="text-lg font-bold text-slate-800">Add New Student</h3>
+               <h3 className="text-lg font-bold text-slate-800">{t('dashboard.addNewStudent')}</h3>
                <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 transition">&times;</button>
              </div>
              
              <form onSubmit={handleCreateSubmit} className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('dashboard.fullName')}</label>
                     <input type="text" required className="input-primary" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Date of Birth *</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('dashboard.dateOfBirth')}</label>
                     <input type="date" required className="input-primary" value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Grade</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('dashboard.grade')}</label>
                     <input type="number" min="1" max="8" className="input-primary" value={formData.grade} onChange={e => setFormData({...formData, grade: parseInt(e.target.value)})} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Class Group</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('dashboard.classGroup')}</label>
                     <input type="text" className="input-primary" value={formData.classGroup} onChange={e => setFormData({...formData, classGroup: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Gender</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('dashboard.gender')}</label>
                     <select className="input-primary" value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value as any})}>
-                      <option value="M">Male</option>
-                      <option value="F">Female</option>
-                      <option value="Other">Other</option>
+                      <option value="M">{t('dashboard.male')}</option>
+                      <option value="F">{t('dashboard.female')}</option>
+                      <option value="Other">{t('dashboard.other')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Language</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('dashboard.language')}</label>
                     <input type="text" className="input-primary" value={formData.languageOfInstruction} onChange={e => setFormData({...formData, languageOfInstruction: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">{t('dashboard.status')}</label>
                     <select className="input-primary" value={formData.status} onChange={e => setFormData({...formData, status: e.target.value as any})}>
-                      <option value="Active">Active</option>
-                      <option value="Monitoring">Monitoring</option>
-                      <option value="Referred">Referred</option>
+                      <option value="Active">{t('dashboard.studentStatusActive')}</option>
+                      <option value="Monitoring">{t('dashboard.studentStatusMonitoring')}</option>
+                      <option value="Referred">{t('dashboard.studentStatusReferred')}</option>
                     </select>
                   </div>
                   <div className="col-span-2 flex items-center gap-2 mt-2">
                     <input type="checkbox" id="consent" checked={formData.parentalConsentGiven} onChange={e => setFormData({...formData, parentalConsentGiven: e.target.checked})} className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
-                    <label htmlFor="consent" className="text-sm font-medium text-slate-700">Parental Consent Given</label>
+                    <label htmlFor="consent" className="text-sm font-medium text-slate-700">{t('dashboard.parentalConsentGiven')}</label>
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                  <button type="button" onClick={() => setShowAddModal(false)} className="btn-secondary">Cancel</button>
-                  <button type="submit" className="btn-primary">Save Student</button>
+                  <button type="button" onClick={() => setShowAddModal(false)} className="btn-secondary">{t('common.cancel')}</button>
+                  <button type="submit" className="btn-primary">{t('common.save')} {t('dashboard.studentName')}</button>
                 </div>
              </form>
           </div>

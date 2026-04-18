@@ -8,6 +8,7 @@ const studentsRouter = require('./routes/students');
 const testSessionsRouter = require('./routes/testSessions');
 const interventionsRouter = require('./routes/interventions');
 const reportsRouter = require('./routes/reports');
+const miniGamesRouter = require('./routes/miniGamesRoutes');
 
 const authenticate = require('./middleware/authenticate');
 

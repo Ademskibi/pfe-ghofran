@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { LayoutDashboard, Users, LineChart, Brain, LogOut, User, FileText } from 'lucide-react';
+import { useTranslation } from '../i18n';
+import logo from '../OIP.webp';
+import { LayoutDashboard, Users, LineChart, Brain, LogOut, User, FileText, Sparkles } from 'lucide-react';
 
 const Layout: React.FC = () => {
   const { currentUser, logout } = useAppContext();
+  const { t, language, setLanguage } = useTranslation();
   const navigate = useNavigate();
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
@@ -15,33 +18,32 @@ const Layout: React.FC = () => {
 
   const navItems = currentUser?.role === 'teacher' 
     ? [
-        { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { path: '/class-overview', label: 'Class Overview', icon: Users },
-        { path: '/progress-tracking', label: 'Progress Tracking', icon: LineChart },
-        // { path: '/new-assessment', label: 'New Assessment', icon: Brain } // Assuming handled from Dashboard or Student detail
+        { path: '/dashboard', label: t('layout.dashboard'), icon: LayoutDashboard },
+        { path: '/class-overview', label: t('layout.classOverview'), icon: Users },
+        { path: '/progress-tracking', label: t('layout.progressTracking'), icon: LineChart },
       ]
     : [
-        { path: '/student-portal', label: 'My Portal', icon: Brain },
-        /* { path: '/my-progress', label: 'My Progress', icon: LineChart } */
+        { path: '/student-portal', label: t('layout.myPortal'), icon: Brain },
+        { path: '/mini-games', label: t('layout.miniGames'), icon: Sparkles },
       ];
 
   // Derive initials roughly
   const userInitial = currentUser?.role === 'teacher' ? 'T' : 'S';
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-800 font-sans">
+    <div className="flex h-screen bg-app-background text-[var(--color-black)] font-sans">
       {/* Sidebar */}
       <aside 
-        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col ${isSidebarExpanded ? 'w-[220px]' : 'w-[64px]'}`}
+        className={`bg-panel border-r border-panel transition-all duration-300 flex flex-col ${isSidebarExpanded ? 'w-[220px]' : 'w-[64px]'}`}
         onMouseEnter={() => setIsSidebarExpanded(true)}
         onMouseLeave={() => setIsSidebarExpanded(false)}
       >
-        <div className="h-16 flex items-center justify-center border-b border-slate-200 bg-indigo-600 text-white shadow-sm overflow-hidden flex-shrink-0">
-           {isSidebarExpanded ? (
-             <span className="font-bold text-xl tracking-tight leading-none whitespace-nowrap px-4 w-full">NeuroCal</span>
-           ) : (
-             <Brain className="w-8 h-8 flex-shrink-0" />
-           )}
+        <div className="h-16 flex items-center justify-center border-b border-panel bg-brand text-white shadow-brand overflow-hidden flex-shrink-0">
+          {isSidebarExpanded ? (
+            <img src={logo} alt="NeuroCal logo" className="h-10 object-contain" />
+          ) : (
+            <img src={logo} alt="NeuroCal logo" className="h-8 w-8 object-contain" />
+          )}
         </div>
         
         <nav className="flex-1 overflow-y-auto py-4 flex flex-col gap-2 relative scrollbar-hide">
@@ -52,7 +54,7 @@ const Layout: React.FC = () => {
               title={item.label}
               className={({ isActive }) => 
                 `flex items-center mx-2 px-3 py-2.5 rounded-lg transition-colors whitespace-nowrap overflow-hidden ${
-                  isActive ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  isActive ? 'bg-brand text-white font-medium' : 'text-[var(--color-fox-dark)] hover:bg-[var(--color-bg-shape)] hover:text-[var(--color-black)]'
                 }`
               }
             >
@@ -66,21 +68,35 @@ const Layout: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm flex-shrink-0">
-          <h1 className="text-xl font-semibold text-slate-800 capitalize">
-             {/* Simple hack to set a title - could use a custom hook */}
-             Portal
+        <header className="h-16 bg-panel border-b border-panel flex items-center justify-between px-6 shadow-sm flex-shrink-0">
+          <h1 className="text-xl font-semibold text-[var(--color-fox-dark)] capitalize">
+             {t('layout.portal')}
           </h1>
           <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <label htmlFor="language-select" className="text-sm font-medium text-slate-500 hidden sm:block">
+                {t('layout.language')}:
+              </label>
+              <select
+                id="language-select"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as any)}
+                className="input-primary h-10"
+              >
+                <option value="en">{t('layout.english')}</option>
+                <option value="fr">{t('layout.french')}</option>
+                <option value="ar">{t('layout.arabic')}</option>
+              </select>
+            </div>
             <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold relative group">
+              <div className="w-9 h-9 rounded-full bg-[var(--color-ui-dark)] text-white flex items-center justify-center font-bold relative group">
                 {userInitial}
               </div>
             </div>
             <button 
               onClick={handleLogout}
-              className="flex items-center text-slate-500 hover:text-rose-600 transition-colors p-2 rounded-full hover:bg-rose-50"
-              title="Logout"
+              className="flex items-center text-[var(--color-fox-dark)] hover:text-[var(--color-fox)] transition-colors p-2 rounded-full hover:bg-[var(--color-bg-shape)]"
+              title={t('layout.logout')}
             >
               <LogOut className="w-5 h-5" />
             </button>

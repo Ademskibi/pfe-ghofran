@@ -52,3 +52,14 @@ export interface UserToken {
   exp?: number;
   iat?: number;
 }
+
+export interface MiniGameProgress {
+  _id: string;
+  userId: string;
+  studentId: string;
+  gameType: 'pizza-slices' | 'number-match';
+  score: number;
+  level: string;
+  completedRounds: number;
+  lastPlayedAt: string;
+}
