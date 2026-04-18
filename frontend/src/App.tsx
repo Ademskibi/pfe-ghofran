@@ -40,7 +40,7 @@ const App: React.FC = () => {
 
              {/* Student Route */}
              <Route path="/student-portal" element={
-                <ProtectedRoute allowedRoles={['student']}><StudentPortal /></ProtectedRoute>
+                <ProtectedRoute allowedRoles={['student', 'teacher']}><StudentPortal /></ProtectedRoute>
              } />
              <Route path="/mini-games" element={
                 <ProtectedRoute allowedRoles={['student']}><MiniGamesHome /></ProtectedRoute>

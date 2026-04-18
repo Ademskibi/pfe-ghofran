@@ -1,6 +1,8 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const Student = require('../models/Student');
 const TestSession = require('../models/TestSession');
+const User = require('../models/User');
 const requireRole = require('../middleware/requireRole');
 const router = express.Router();
 
@@ -58,6 +60,60 @@ router.post('/', requireRole('teacher'), async (req, res) => {
     res.status(201).json(savedStudent);
   } catch (err) {
     res.status(500).json({ error: 'Server error creating student' });
+  }
+});
+
+// POST /api/students/with-account
+// Creates a student profile and the linked student login account in one request.
+router.post('/with-account', requireRole('teacher'), async (req, res) => {
+  let createdStudent = null;
+
+  try {
+    const { email, password, ...studentPayload } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    const normalizedEmail = email.toLowerCase();
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+
+    createdStudent = new Student(studentPayload);
+    const savedStudent = await createdStudent.save();
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const studentUser = new User({
+      email: normalizedEmail,
+      passwordHash,
+      role: 'student',
+      studentId: savedStudent._id,
+    });
+
+    const savedUser = await studentUser.save();
+
+    return res.status(201).json({
+      message: 'student-and-account-created',
+      student: savedStudent,
+      user: {
+        _id: savedUser._id,
+        email: savedUser.email,
+        role: savedUser.role,
+        studentId: savedUser.studentId,
+      },
+    });
+  } catch (err) {
+    // Best-effort rollback if account creation fails after student creation.
+    if (createdStudent && createdStudent._id) {
+      await Student.findByIdAndDelete(createdStudent._id).catch(() => null);
+    }
+    console.error(err);
+    return res.status(500).json({ error: 'Server error creating student and account' });
   }
 });
 

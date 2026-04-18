@@ -14,6 +14,7 @@ interface AppContextType {
   logout: () => void;
   fetchStudents: () => Promise<void>;
   addStudent: (data: Partial<Student>) => Promise<void>;
+  addStudentWithAccount: (data: Partial<Student> & { email: string; password: string }) => Promise<void>;
   updateStudent: (id: string, data: Partial<Student>) => Promise<void>;
   deleteStudent: (id: string) => Promise<void>;
   fetchTestSessions: (studentId?: string) => Promise<void>;
@@ -130,6 +131,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const addStudentWithAccount = async (data: Partial<Student> & { email: string; password: string }) => {
+    const res = await fetch(`${API_URL}/students/with-account`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body?.error || 'Failed to create student with account');
+    }
+
+    await fetchStudents();
   };
 
   const updateStudent = async (id: string, data: Partial<Student>) => {
@@ -289,6 +305,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         logout,
         fetchStudents,
         addStudent,
+        addStudentWithAccount,
         updateStudent,
         deleteStudent,
         fetchTestSessions,

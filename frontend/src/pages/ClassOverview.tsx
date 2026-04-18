@@ -3,10 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { useTranslation } from '../i18n';
 import { Search, Filter, ChevronRight, BarChart3 } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext';
 
 const ClassOverview: React.FC = () => {
   const { students, testSessions } = useAppContext();
+<<<<<<< HEAD
   const { t } = useTranslation();
+=======
+  const { t } = useI18n();
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
   const navigate = useNavigate();
 
   const [gradeFilter, setGradeFilter] = useState<string>('all');
@@ -33,7 +38,11 @@ const ClassOverview: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
+<<<<<<< HEAD
         <h2 className="text-2xl font-bold text-slate-800">{t('classOverview.classOverview')}</h2>
+=======
+        <h2 className="text-2xl font-bold text-slate-800">{t('classOverview.title')}</h2>
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
         <div className="flex gap-4">
           <div className="card py-2 px-4 flex items-center gap-3">
              <BarChart3 className="w-5 h-5 text-indigo-500" />
@@ -51,7 +60,11 @@ const ClassOverview: React.FC = () => {
             <Search className="w-5 h-5 absolute left-3 top-2.5 text-slate-400" />
             <input 
               type="text" 
+<<<<<<< HEAD
               placeholder={t('classOverview.searchStudents')} 
+=======
+              placeholder={t('classOverview.searchPlaceholder')} 
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
               className="input-primary pl-10"
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -61,18 +74,31 @@ const ClassOverview: React.FC = () => {
             <Filter className="w-5 h-5 text-slate-400" />
             <select className="input-primary" value={gradeFilter} onChange={e => setGradeFilter(e.target.value)}>
               <option value="all">{t('classOverview.allGrades')}</option>
+<<<<<<< HEAD
               <option value="1">{t('classOverview.grade1')}</option>
               <option value="2">{t('classOverview.grade2')}</option>
               <option value="3">{t('classOverview.grade3')}</option>
               <option value="4">{t('classOverview.grade4')}</option>
+=======
+              <option value="1">{t('dashboard.grade')} 1</option>
+              <option value="2">{t('dashboard.grade')} 2</option>
+              <option value="3">{t('dashboard.grade')} 3</option>
+              <option value="4">{t('dashboard.grade')} 4</option>
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
             </select>
           </div>
           <div className="w-full md:w-48">
             <select className="input-primary" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
               <option value="all">{t('classOverview.allStatuses')}</option>
+<<<<<<< HEAD
               <option value="Active">{t('classOverview.active')}</option>
               <option value="Monitoring">{t('classOverview.monitoring')}</option>
               <option value="Referred">{t('classOverview.referred')}</option>
+=======
+              <option value="Active">{t('status.Active')}</option>
+              <option value="Monitoring">{t('status.Monitoring')}</option>
+              <option value="Referred">{t('status.Referred')}</option>
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
             </select>
           </div>
         </div>
@@ -81,11 +107,19 @@ const ClassOverview: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 text-slate-500 text-sm font-medium border-b border-slate-200">
+<<<<<<< HEAD
                 <th className="py-3 px-4 rounded-tl-lg">{t('classOverview.studentName')}</th>
                 <th className="py-3 px-4">{t('classOverview.gradeClass')}</th>
                 <th className="py-3 px-4">{t('classOverview.latestTier')}</th>
                 <th className="py-3 px-4">{t('classOverview.latestDri')}</th>
                 <th className="py-3 px-4">{t('classOverview.status')}</th>
+=======
+                <th className="py-3 px-4 rounded-tl-lg">{t('dashboard.studentName')}</th>
+                <th className="py-3 px-4">{t('classOverview.gradeClass')}</th>
+                <th className="py-3 px-4">{t('classOverview.latestTier')}</th>
+                <th className="py-3 px-4">{t('classOverview.latestDri')}</th>
+                <th className="py-3 px-4">{t('dashboard.status')}</th>
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
                 <th className="py-3 px-4 text-right rounded-tr-lg">{t('classOverview.action')}</th>
               </tr>
             </thead>
@@ -96,16 +130,20 @@ const ClassOverview: React.FC = () => {
                 return (
                   <tr key={st._id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => navigate(`/student/${st._id}`)}>
                     <td className="py-4 px-4 font-medium text-slate-800">{st.fullName}</td>
-                    <td className="py-4 px-4 text-slate-600">G{st.grade || '-'} / {st.classGroup || '-'}</td>
+                    <td className="py-4 px-4 text-slate-600">{t('dashboard.gradeShort')}{st.grade || '-'} / {st.classGroup || '-'}</td>
                     <td className="py-4 px-4">
+<<<<<<< HEAD
                       {latestTs ? <span className={`badge-tier-${latestTs.tier}`}>{t(`dashboard.tier${latestTs.tier}`)}</span> : <span className="text-slate-400 italic">{t('classOverview.noData')}</span>}
+=======
+                      {latestTs ? <span className={`badge-tier-${latestTs.tier}`}>{t('dashboard.tier')} {latestTs.tier}</span> : <span className="text-slate-400 italic">{t('classOverview.noData')}</span>}
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
                     </td>
                     <td className="py-4 px-4">
                       {latestTs ? <span className="font-semibold text-slate-700">{Math.round(latestTs.dri)}</span> : <span className="text-slate-400 italic">{t('classOverview.noData')}</span>}
                     </td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 rounded-md text-xs font-semibold ${st.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : st.status === 'Monitoring' ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
-                        {st.status}
+                        {t(`status.${st.status}`)}
                       </span>
                     </td>
                     <td className="py-4 px-4 text-right">
@@ -118,7 +156,11 @@ const ClassOverview: React.FC = () => {
               })}
               {filteredStudents.length === 0 && (
                 <tr>
+<<<<<<< HEAD
                   <td colSpan={6} className="py-12 text-center text-slate-500 font-medium">{t('classOverview.noStudentsFound')}</td>
+=======
+                  <td colSpan={6} className="py-12 text-center text-slate-500 font-medium">{t('classOverview.noStudents')}</td>
+>>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
                 </tr>
               )}
             </tbody>
