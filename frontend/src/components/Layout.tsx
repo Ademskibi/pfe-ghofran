@@ -1,23 +1,14 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-<<<<<<< HEAD
+import { LayoutDashboard, Users, LineChart, Brain, LogOut, Sparkles } from 'lucide-react';
 import { useTranslation } from '../i18n';
-import logo from '../OIP.webp';
-import { LayoutDashboard, Users, LineChart, Brain, LogOut, User, FileText, Sparkles } from 'lucide-react';
-
-const Layout: React.FC = () => {
-  const { currentUser, logout } = useAppContext();
-  const { t, language, setLanguage } = useTranslation();
-=======
-import { LayoutDashboard, Users, LineChart, Brain, LogOut } from 'lucide-react';
-import { useI18n } from '../i18n/I18nContext';
 import LanguageSwitcher from './LanguageSwitcher';
+import logo from '../OIP.webp';
 
 const Layout: React.FC = () => {
   const { currentUser, logout } = useAppContext();
-  const { t } = useI18n();
->>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
@@ -26,26 +17,17 @@ const Layout: React.FC = () => {
     navigate('/login');
   };
 
-  const navItems = currentUser?.role === 'teacher' 
+  const navItems = currentUser?.role === 'teacher'
     ? [
-<<<<<<< HEAD
-        { path: '/dashboard', label: t('layout.dashboard'), icon: LayoutDashboard },
-        { path: '/class-overview', label: t('layout.classOverview'), icon: Users },
-        { path: '/progress-tracking', label: t('layout.progressTracking'), icon: LineChart },
-      ]
-    : [
-        { path: '/student-portal', label: t('layout.myPortal'), icon: Brain },
-        { path: '/mini-games', label: t('layout.miniGames'), icon: Sparkles },
-=======
         { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
         { path: '/class-overview', label: t('nav.classOverview'), icon: Users },
         { path: '/progress-tracking', label: t('nav.progressTracking'), icon: LineChart },
-        // { path: '/new-assessment', label: 'New Assessment', icon: Brain } // Assuming handled from Dashboard or Student detail
+        // { path: '/new-assessment', label: t('nav.newAssessment') ?? 'New Assessment', icon: Brain },
       ]
     : [
         { path: '/student-portal', label: t('nav.myPortal'), icon: Brain },
-        /* { path: '/my-progress', label: 'My Progress', icon: LineChart } */
->>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
+        { path: '/mini-games', label: t('nav.miniGames'), icon: Sparkles },
+        // { path: '/my-progress', label: t('nav.myProgress') ?? 'My Progress', icon: LineChart },
       ];
 
   // Derive initials roughly
@@ -89,36 +71,12 @@ const Layout: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-<<<<<<< HEAD
         <header className="h-16 bg-panel border-b border-panel flex items-center justify-between px-6 shadow-sm flex-shrink-0">
           <h1 className="text-xl font-semibold text-[var(--color-fox-dark)] capitalize">
-             {t('layout.portal')}
-          </h1>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <label htmlFor="language-select" className="text-sm font-medium text-slate-500 hidden sm:block">
-                {t('layout.language')}:
-              </label>
-              <select
-                id="language-select"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as any)}
-                className="input-primary h-10"
-              >
-                <option value="en">{t('layout.english')}</option>
-                <option value="fr">{t('layout.french')}</option>
-                <option value="ar">{t('layout.arabic')}</option>
-              </select>
-            </div>
-=======
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm flex-shrink-0">
-          <h1 className="text-xl font-semibold text-slate-800 capitalize">
-             {/* Simple hack to set a title - could use a custom hook */}
-             {t('common.portal')}
+            {t('common.portal')}
           </h1>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
->>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-[var(--color-ui-dark)] text-white flex items-center justify-center font-bold relative group">
                 {userInitial}
@@ -126,13 +84,8 @@ const Layout: React.FC = () => {
             </div>
             <button 
               onClick={handleLogout}
-<<<<<<< HEAD
               className="flex items-center text-[var(--color-fox-dark)] hover:text-[var(--color-fox)] transition-colors p-2 rounded-full hover:bg-[var(--color-bg-shape)]"
-              title={t('layout.logout')}
-=======
-              className="flex items-center text-slate-500 hover:text-rose-600 transition-colors p-2 rounded-full hover:bg-rose-50"
               title={t('nav.logout')}
->>>>>>> 18ba6cdcf69e235cec9fdd6f55ab15c28db9ff0f
             >
               <LogOut className="w-5 h-5" />
             </button>

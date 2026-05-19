@@ -14,6 +14,7 @@ import StudentPortal from './pages/StudentPortal';
 import MiniGamesHome from './modules/miniGames/pages/MiniGamesHome';
 import PizzaSlicesGame from './modules/miniGames/pages/PizzaSlicesGame';
 import NumberElementsGame from './modules/miniGames/pages/NumberElementsGame';
+import SghartoonPage from './modules/sghartoon/pages/SghartoonPage';
 
 const App: React.FC = () => {
   return (
@@ -50,6 +51,9 @@ const App: React.FC = () => {
              } />
              <Route path="/mini-games/number-match" element={
                 <ProtectedRoute allowedRoles={['student']}><NumberElementsGame /></ProtectedRoute>
+             } />
+             <Route path="/sghartoon" element={
+                <ProtectedRoute allowedRoles={['teacher']}><SghartoonPage /></ProtectedRoute>
              } />
           </Route>
           

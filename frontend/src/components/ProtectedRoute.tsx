@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { useI18n } from '../i18n/I18nContext';
+import { useTranslation } from '../i18n';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
   const { currentUser, loading } = useAppContext();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const location = useLocation();
 
   if (loading) {

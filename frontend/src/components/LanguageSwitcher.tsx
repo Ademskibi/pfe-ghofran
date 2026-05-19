@@ -1,8 +1,8 @@
 import React from 'react';
-import { useI18n } from '../i18n/I18nContext';
+import { useTranslation } from '../i18n';
 
 const LanguageSwitcher: React.FC = () => {
-  const { language, setLanguage, t } = useI18n();
+  const { language, setLanguage, t } = useTranslation();
 
   const options: Array<{ code: 'ar' | 'fr' | 'en'; label: string }> = [
     { code: 'ar', label: 'AR' },

@@ -1,0 +1,320 @@
+.selectionContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f0f0 0%, #faf6f6 100%);
+  padding: 24px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.selectionHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.selectionHeader h1 {
+  font-size: 2rem;
+  color: #0a0a0a;
+  margin-bottom: 4px;
+}
+
+.selectionHeader p {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.studentList {
+  max-width: 1000px;
+  margin: 0 auto 32px;
+}
+
+.studentList h2 {
+  font-size: 1.3rem;
+  color: #0a0a0a;
+  margin-bottom: 16px;
+}
+
+.studentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.studentCard {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.studentCard:hover {
+  border-color: #c0392b;
+  box-shadow: 0 8px 16px rgba(192, 57, 43, 0.1);
+  transform: translateY(-4px);
+}
+
+.studentCardContent {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.studentInitials {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.cardName {
+  font-weight: 700;
+  color: #0a0a0a;
+  margin-bottom: 4px;
+}
+
+.cardMeta {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.testButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.testBtnDy {
+  flex: 1;
+  padding: 8px 12px;
+  background: #dcfce7;
+  color: #16a34a;
+  border: 2px solid #16a34a;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.testBtnDy:hover {
+  background: #16a34a;
+  color: white;
+}
+
+.testBtnDc {
+  flex: 1;
+  padding: 8px 12px;
+  background: #fef3c7;
+  color: #d97706;
+  border: 2px solid #d97706;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.testBtnDc:hover {
+  background: #d97706;
+  color: white;
+}
+
+.infoBox {
+  max-width: 1000px;
+  margin: 32px auto;
+  background: white;
+  border-left: 4px solid #3b82f6;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.infoBox h3 {
+  margin-top: 0;
+  color: #3b82f6;
+  font-size: 0.95rem;
+}
+
+.infoBox p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Results Page */
+.resultsContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f0f0 0%, #faf6f6 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.resultsHeader h1 {
+  margin: 0;
+  color: #0a0a0a;
+  font-size: 1.6rem;
+}
+
+.backBtn {
+  padding: 8px 16px;
+  background: #e2e8f0;
+  color: #64748b;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  background: #cbd5e1;
+  transform: translateX(-4px);
+}
+
+.studentInfo {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border-left: 4px solid #c0392b;
+}
+
+.studentName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0a0a0a;
+}
+
+.studentMeta {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.resultBox {
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.resultBox h3 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+}
+
+.scorePercentage {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.curriculumBox {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border-left: 4px solid #3b82f6;
+}
+
+.curriculumBox h3 {
+  margin-top: 0;
+  color: #0a0a0a;
+}
+
+.competencesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.competence {
+  font-size: 0.9rem;
+  color: #64748b;
+  padding: 8px 12px;
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.retakeBtn {
+  padding: 12px 24px;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retakeBtn:hover {
+  background: #15803d;
+  transform: scale(1.05);
+}
+
+.reportBtn {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reportBtn:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .studentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resultsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .selectionHeader h1 {
+    font-size: 1.5rem;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+  }
+}

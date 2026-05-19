@@ -9,6 +9,9 @@ const testSessionsRouter = require('./routes/testSessions');
 const interventionsRouter = require('./routes/interventions');
 const reportsRouter = require('./routes/reports');
 const miniGamesRouter = require('./routes/miniGamesRoutes');
+const testsRouter = require('./routes/tests');
+const resultatTestsRouter = require('./routes/resultatTests');
+const classesRouter = require('./routes/classes');
 
 const authenticate = require('./middleware/authenticate');
 
@@ -43,6 +46,10 @@ app.use('/api/students', authenticate, studentsRouter);
 app.use('/api/testSessions', authenticate, testSessionsRouter);
 app.use('/api/interventions', authenticate, interventionsRouter);
 app.use('/api/reports', authenticate, reportsRouter);
+app.use('/api/minigames', authenticate, miniGamesRouter);
+app.use('/api/tests', authenticate, testsRouter);
+app.use('/api/resultat-tests', authenticate, resultatTestsRouter);
+app.use('/api/classes', authenticate, classesRouter);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });

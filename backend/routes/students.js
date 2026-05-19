@@ -97,6 +97,9 @@ router.post('/with-account', requireRole('teacher'), async (req, res) => {
 
     const savedUser = await studentUser.save();
 
+    savedStudent.userId = savedUser._id;
+    await savedStudent.save();
+
     return res.status(201).json({
       message: 'student-and-account-created',
       student: savedStudent,
