@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { useTranslation } from '../i18n';
 import { Brain, Gamepad2, Star, Smile } from 'lucide-react';
+import { TestPlayer } from '../modules/sghartoon/components/TestPlayer';
+import { DYSLEXIA_QUESTIONS, DYSCALCULIA_QUESTIONS } from '../modules/sghartoon/data/questionBank';
+import { Question } from '../modules/sghartoon/hooks/useTestEngine';
 
 const DOMAINS = [
   'Number sense',
@@ -22,53 +25,34 @@ const StudentPortal: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [currentQ, setCurrentQ] = useState(0);
-  const [scores, setScores] = useState<number[]>(new Array(10).fill(50));
   const [testPhase, setTestPhase] = useState<'intro' | 'testing' | 'success'>('intro');
+  const [testQuestions, setTestQuestions] = useState<Question[]>([]);
 
   const mySessions = [...testSessions].sort((a, b) => new Date(b.testDate).getTime() - new Date(a.testDate).getTime());
   const latestSession = mySessions.length > 0 ? mySessions[0] : null;
 
-  const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newScores = [...scores];
-    newScores[currentQ] = parseInt(e.target.value, 10);
-    setScores(newScores);
+  const buildSghartoonQuestions = (): Question[] => {
+    const allQuestions = [
+      ...DYSLEXIA_QUESTIONS.map((q) => ({ ...q, type: 'dyslexia' as const })),
+      ...DYSCALCULIA_QUESTIONS.map((q) => ({ ...q, type: 'dyscalculia' as const })),
+    ];
+
+    return allQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
   };
 
-  const nextQ = () => {
-    if (currentQ < 9) {
-      setCurrentQ((prev) => prev + 1);
-    }
+  const handleStartTest = () => {
+    setTestQuestions(buildSghartoonQuestions());
+    setTestPhase('testing');
   };
 
-  const prevQ = () => {
-    if (currentQ > 0) {
-      setCurrentQ((prev) => prev - 1);
-    }
-  };
-
-  const handleSubmit = () => {
-    if (!currentUser?.studentId) return;
-
-    const domains = DOMAINS.map((name, i) => ({
-      name,
-      score: scores[i]
-    }));
-
-    createTestSession({
-      studentId: currentUser.studentId,
-      domains,
-      condition: 'calm',
-      testDate: new Date().toISOString()
-    });
-
+  const handleTestComplete = () => {
     setTestPhase('success');
+    setTestQuestions([]);
+  };
 
-    setTimeout(() => {
-      setTestPhase('intro');
-      setScores(new Array(10).fill(50));
-      setCurrentQ(0);
-    }, 3000);
+  const handleCancelTest = () => {
+    setTestPhase('intro');
+    setTestQuestions([]);
   };
 
   return (
@@ -115,7 +99,7 @@ const StudentPortal: React.FC = () => {
           <p className="mt-5 text-[var(--color-fox-dark)]">{t('studentPortal.letsPlay')}</p>
           <button
             type="button"
-            onClick={() => setTestPhase('testing')}
+            onClick={handleStartTest}
             className="mt-8 w-full rounded-3xl bg-[var(--color-yellow-button)] px-6 py-5 text-xl font-bold text-[var(--color-black)] shadow-lg shadow-[rgba(255,213,0,0.3)] transition-all duration-300 hover:scale-105 active:scale-95"
           >
             {t('studentPortal.startTest')}
@@ -123,65 +107,15 @@ const StudentPortal: React.FC = () => {
         </div>
       </div>
 
-      {testPhase === 'testing' && (
+      {testPhase === 'testing' && testQuestions.length > 0 && (
         <div className="w-full rounded-[32px] bg-panel p-8 shadow-2xl border border-panel">
-          <div className="flex items-center justify-between gap-4 mb-8">
-            <div>
-              <p className="text-sm uppercase tracking-[0.35em] text-[var(--color-fox-dark)]">{t('studentPortal.question')} {currentQ + 1} / 10</p>
-              <h2 className="mt-2 text-3xl font-bold text-[var(--color-fox-dark)]">{t('studentPortal.chooseNumber')}</h2>
-            </div>
-            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[rgba(47,168,204,0.12)] text-[var(--color-ui-dark)] shadow-sm">
-              <Star className="h-8 w-8" />
-            </div>
-          </div>
-
-          <div className="rounded-[32px] bg-panel-soft p-8 text-center shadow-inner border border-panel">
-            <p className="text-5xl font-extrabold text-[var(--color-ui-dark)]">{scores[currentQ]}</p>
-            <p className="mt-3 text-[var(--color-fox-dark)]">{t('studentPortal.moveSlider')}</p>
-          </div>
-
-          <div className="mt-8">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={scores[currentQ]}
-              onChange={handleSlider}
-              className="w-full accent-[var(--color-ui)]"
-            />
-            <div className="mt-4 flex justify-between text-sm text-[var(--color-fox-dark)]">
-              <span>{t('studentPortal.low')}</span>
-              <span>{t('studentPortal.high')}</span>
-            </div>
-          </div>
-
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-            <button
-              type="button"
-              onClick={prevQ}
-              disabled={currentQ === 0}
-              className="w-full rounded-3xl bg-panel-soft px-6 py-4 text-base font-semibold text-[var(--color-fox-dark)] transition-all duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {t('studentPortal.previous')}
-            </button>
-            {currentQ < 9 ? (
-              <button
-                type="button"
-                onClick={nextQ}
-                className="w-full rounded-3xl bg-brand px-6 py-4 text-base font-bold text-white shadow-lg shadow-brand transition-all duration-300 hover:scale-105 active:scale-95"
-              >
-                {t('studentPortal.next')}
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="w-full rounded-3xl bg-[var(--color-yellow-button)] px-6 py-4 text-base font-bold text-[var(--color-black)] shadow-lg shadow-[rgba(255,213,0,0.3)] transition-all duration-300 hover:scale-105 active:scale-95"
-              >
-                {t('studentPortal.finish')}
-              </button>
-            )}
-          </div>
+          <TestPlayer
+            studentName={currentUser?.role === 'student' ? 'Tu' : 'Élève'}
+            studentAge={8}
+            questions={testQuestions}
+            onComplete={handleTestComplete}
+            onCancel={handleCancelTest}
+          />
         </div>
       )}
 

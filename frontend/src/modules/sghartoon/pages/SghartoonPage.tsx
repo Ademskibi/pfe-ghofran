@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TestPlayer } from '../components/TestPlayer';
 import { DYSLEXIA_QUESTIONS, DYSCALCULIA_QUESTIONS } from '../data/questionBank';
 import { TestScore, Question } from '../hooks/useTestEngine';
 import { ageToComplexityPool, scoreToGravity, CURRICULUM } from '../data/taxonomy';
+import { useTranslation } from '../../../i18n';
 import styles from '../styles/sghartoonPage.module.css';
 
 interface Student {
@@ -20,6 +21,7 @@ const SghartoonPage: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [testScore, setTestScore] = useState<TestScore | null>(null);
   const [testQuestions, setTestQuestions] = useState<Question[]>([]);
+  const { t } = useTranslation();
 
   // Mock students - replace with API call
   const mockStudents: Student[] = [
@@ -102,9 +104,9 @@ const SghartoonPage: React.FC = () => {
     return (
       <div className={styles.resultsContainer}>
         <div className={styles.resultsHeader}>
-          <h1>📊 Résultats Sghartoon</h1>
+          <h1>📊 {t('sghartoon.results')}</h1>
           <button className={styles.backBtn} onClick={handleBackToSelect}>
-            ← Retour
+            ← {t('sghartoon.back')}
           </button>
         </div>
 
@@ -113,7 +115,10 @@ const SghartoonPage: React.FC = () => {
             {selectedStudent.firstName} {selectedStudent.lastName}
           </div>
           <div className={styles.studentMeta}>
-            {selectedStudent.age} ans · {selectedStudent.classLevel}
+            {t('sghartoon.studentMeta', {
+              age: selectedStudent.age,
+              classLevel: selectedStudent.classLevel,
+            })}
           </div>
         </div>
 
@@ -123,7 +128,7 @@ const SghartoonPage: React.FC = () => {
             className={styles.resultBox}
             style={{ background: dyGravity.bg, borderColor: dyGravity.color }}
           >
-            <h3 style={{ color: dyGravity.color }}>📖 Dyslexie</h3>
+            <h3 style={{ color: dyGravity.color }}>📖 {t('sghartoon.dyslexia')}</h3>
             <div className={styles.scorePercentage} style={{ color: dyGravity.color }}>
               {Math.round(testScore.dyS * 100)}%
             </div>
@@ -146,7 +151,7 @@ const SghartoonPage: React.FC = () => {
             className={styles.resultBox}
             style={{ background: dcGravity.bg, borderColor: dcGravity.color }}
           >
-            <h3 style={{ color: dcGravity.color }}>🔢 Dyscalculie</h3>
+            <h3 style={{ color: dcGravity.color }}>🔢 {t('sghartoon.dyscalculia')}</h3>
             <div className={styles.scorePercentage} style={{ color: dcGravity.color }}>
               {Math.round(testScore.dcS * 100)}%
             </div>
@@ -167,7 +172,7 @@ const SghartoonPage: React.FC = () => {
 
         {/* Curriculum Info */}
         <div className={styles.curriculumBox}>
-          <h3>📚 Référentiel curriculaire — MEN Tunisie</h3>
+          <h3>📚 {t('sghartoon.curriculum')}</h3>
           <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '12px' }}>
             {currDy.label}
           </p>
@@ -190,9 +195,9 @@ const SghartoonPage: React.FC = () => {
             className={styles.retakeBtn}
             onClick={() => handleStartTest(selectedStudent, 'dyslexia')}
           >
-            🔄 Refaire le test
+            🔄 {t('sghartoon.retake')}
           </button>
-          <button className={styles.reportBtn}>🖨️ Générer rapport</button>
+          <button className={styles.reportBtn}>🖨️ {t('sghartoon.report')}</button>
         </div>
       </div>
     );
@@ -203,12 +208,12 @@ const SghartoonPage: React.FC = () => {
     <div className={styles.selectionContainer}>
       <div className={styles.selectionHeader}>
         <div className={styles.logo}>🦁</div>
-        <h1>Sghartoon Enseignant 🇹🇳</h1>
-        <p>Dépistage adaptatif — Dyslexie & Dyscalculie (MEN Tunisie)</p>
+        <h1>{t('sghartoon.title')}</h1>
+        <p>{t('sghartoon.subtitle')}</p>
       </div>
 
       <div className={styles.studentList}>
-        <h2>Sélectionnez un élève</h2>
+        <h2>{t('sghartoon.selectStudent')}</h2>
         <div className={styles.studentGrid}>
           {mockStudents.map((student) => (
             <div key={student.id} className={styles.studentCard}>
@@ -222,7 +227,10 @@ const SghartoonPage: React.FC = () => {
                     {student.firstName} {student.lastName}
                   </div>
                   <div className={styles.cardMeta}>
-                    {student.age} ans · {student.classLevel}
+                    {t('sghartoon.studentMeta', {
+                      age: student.age,
+                      classLevel: student.classLevel,
+                    })}
                   </div>
                 </div>
               </div>
@@ -231,13 +239,13 @@ const SghartoonPage: React.FC = () => {
                   className={styles.testBtnDy}
                   onClick={() => handleStartTest(student, 'dyslexia')}
                 >
-                  📖 Dyslexie
+                  📖 {t('sghartoon.dyslexia')}
                 </button>
                 <button
                   className={styles.testBtnDc}
                   onClick={() => handleStartTest(student, 'dyscalculia')}
                 >
-                  🔢 Dyscalculie
+                  🔢 {t('sghartoon.dyscalculia')}
                 </button>
               </div>
             </div>
@@ -246,13 +254,8 @@ const SghartoonPage: React.FC = () => {
       </div>
 
       <div className={styles.infoBox}>
-        <h3>ℹ️ À propos de Sghartoon</h3>
-        <p>
-          Sghartoon est un outil de dépistage pédagogique adaptatif couvrant
-          l'ensemble du curriculum tunisien (1ère–6ème année de base). Les
-          questions s'ajustent à l'âge de l'élève. En cas de gravité G2/G3,
-          orienter vers un spécialiste.
-        </p>
+        <h3>ℹ️ {t('sghartoon.aboutTitle')}</h3>
+        <p>{t('sghartoon.aboutDescription')}</p>
       </div>
     </div>
   );
