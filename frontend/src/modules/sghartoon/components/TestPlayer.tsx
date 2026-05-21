@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Question, useTestEngine, TestScore } from '../hooks/useTestEngine';
 import { ageToComplexityPool, scoreToGravity } from '../data/taxonomy';
-import { useTranslation } from '../../../i18n';
 import styles from '../styles/testPlayer.module.css';
 
 interface TestPlayerProps {
@@ -20,7 +19,6 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
   onCancel,
 }) => {
   const engine = useTestEngine(questions);
-  const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(true);
   const [feedback, setFeedback] = useState<{
     type: 'correct' | 'incorrect';
@@ -30,12 +28,7 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
   const [textInput, setTextInput] = useState('');
 
   const pool = ageToComplexityPool(studentAge);
-  const poolLabel =
-    pool === 1
-      ? t('sghartoon.poolA')
-      : pool === 2
-      ? t('sghartoon.poolB')
-      : t('sghartoon.poolC');
+  const poolLabel = pool === 1 ? '🅰 Base' : pool === 2 ? '🅱 Intermédiaire' : '🅲 Avancé';
 
   const handleChoiceClick = (choice: string) => {
     if (engine.isAnswered) return;
@@ -44,10 +37,8 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
     setFeedback({
       type: isCorrect ? 'correct' : 'incorrect',
       message: isCorrect
-        ? t('sghartoon.correctFeedback')
-        : t('sghartoon.incorrectFeedback', {
-            answer: engine.currentQuestion?.ans ?? '',
-          }),
+        ? '✅ Bravo !'
+        : `😊 Bonne réponse : ${engine.currentQuestion?.ans}`,
     });
     engine.submitAnswer(isCorrect, choice);
   };
@@ -60,10 +51,8 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
     setFeedback({
       type: isCorrect ? 'correct' : 'incorrect',
       message: isCorrect
-        ? t('sghartoon.correctFeedback')
-        : t('sghartoon.incorrectFeedback', {
-            answer: engine.currentQuestion?.ans ?? '',
-          }),
+        ? '✅ Bravo !'
+        : `😊 Bonne réponse : ${engine.currentQuestion?.ans}`,
     });
     engine.submitAnswer(isCorrect, textInput);
   };
@@ -90,11 +79,12 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
     return (
       <div className={styles.completionScreen}>
         <div className={styles.celebrations}>🎉</div>
-        <h2>{t('sghartoon.completionTitle', { name: studentName })}</h2>
-        <p>{t('sghartoon.completionMessage')}</p>
+        <h2>Bravo {studentName} !</h2>
+        <p>Tu as répondu à toutes les questions.</p>
+        <p>Tu as très bien travaillé !</p>
         <div className={styles.stars}>⭐⭐⭐</div>
         <p style={{ fontSize: '0.8rem', color: '#64748b' }}>
-          {t('sghartoon.completionFooter')}
+          Dis à ton enseignant(e) que tu as terminé. 😊
         </p>
       </div>
     );
@@ -104,19 +94,23 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
     return (
       <div className={styles.welcomeScreen}>
         <div className={styles.welcomeEmoji}>🦁</div>
-        <span className={styles.welcomeBadge}>{t('sghartoon.teacherBadge')}</span>
-        <h2>{t('sghartoon.welcomeTitle', { name: studentName })}</h2>
+        <span className={styles.welcomeBadge}>🇹🇳 Sghartoon Enseignant</span>
+        <h2>Bonjour {studentName} !</h2>
         <p>
-          {t('sghartoon.welcomeMessage', { count: questions.length })}
+          Tu vas répondre à <strong>{questions.length} questions</strong>.
+          <br />
+          Fais de ton mieux et prends ton temps.
+          <br />
+          Il n't y a pas de mauvaises réponses ! 😊🌟
         </p>
         <button
           className={styles.btnBegin}
           onClick={() => setShowWelcome(false)}
         >
-          {t('sghartoon.begin')}
+          C'est parti ! ✨
         </button>
         <button className={styles.btnCancel} onClick={onCancel}>
-          {t('sghartoon.cancel')}
+          Annuler
         </button>
       </div>
     );
@@ -127,9 +121,7 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
 
   const questionType = q.id.startsWith('dy') ? 'dyslexia' : 'dyscalculia';
   const typeLabel =
-    questionType === 'dyslexia'
-      ? `📖 ${t('sghartoon.dyslexia')}`
-      : `🔢 ${t('sghartoon.dyscalculia')}`;
+    questionType === 'dyslexia' ? '📖 Dyslexie' : '🔢 Dyscalculie';
   const typeClass = questionType === 'dyslexia' ? 'cbdy' : 'cbdc';
 
   const timerColor =
@@ -146,10 +138,7 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
         <div className={styles.complexityBadge}>{poolLabel}</div>
         <div className={styles.progressContainer}>
           <div className={styles.progressLabel}>
-            {t('sghartoon.questionProgress', {
-              current: engine.currentIndex + 1,
-              total: questions.length,
-            })}
+            Question {engine.currentIndex + 1} / {questions.length}
           </div>
           <div className={styles.progressBar}>
             <div
@@ -212,7 +201,7 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
               <input
                 type="text"
                 className={styles.textInput}
-                placeholder={t('sghartoon.choicePlaceholder')}
+                placeholder="Écris ta réponse..."
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -242,14 +231,14 @@ export const TestPlayer: React.FC<TestPlayerProps> = ({
 
         <div className={styles.navigation}>
           <div className={styles.timingInfo}>
-            ⏱ {engine.isAnswered ? t('sghartoon.waiting') : t('sghartoon.inProgress')}
+            ⏱ {engine.isAnswered ? 'En attente...' : 'En cours…'}
           </div>
           <button
             className={styles.nextBtn}
             onClick={handleNext}
             disabled={!engine.isAnswered}
           >
-            {engine.currentIndex + 1 < questions.length ? t('sghartoon.next') : t('sghartoon.finish')}
+            {engine.currentIndex + 1 < questions.length ? 'Suivant →' : 'Terminer ✓'}
           </button>
         </div>
       </div>

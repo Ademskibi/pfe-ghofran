@@ -4,6 +4,18 @@
 
 :root {
   color-scheme: light;
+  /* Sahartoon Design System */
+  --sahartoon-burgundy: #8B1E3F;
+  --sahartoon-beige: #F8F7F4;
+  --sahartoon-cream: #FDFCFB;
+  --sahartoon-success: #22C55E;
+  --sahartoon-warning: #F59E0B;
+  --sahartoon-danger: #DC2626;
+  --sahartoon-neutral: #E5E7EB;
+  --sahartoon-dark: #1F2937;
+  --sahartoon-light: #F3F4F6;
+  
+  /* Legacy colors (for compatibility) */
   --color-principal: #F28C38;
   --color-fox: #F47C20;
   --color-fox-dark: #7A3F14;
@@ -14,22 +26,32 @@
   --color-ui: #2FA8CC;
   --color-ui-dark: #1F6F8B;
   --color-yellow-button: #FFD500;
-  --color-bg: #F8FAFB;
-  --color-bg-shape: #DDE5EA;
+  --color-bg: #F8F7F4;
+  --color-bg-shape: #E5E7EB;
   --color-surface: #FFFFFF;
-  --color-text: #1A1A1A;
+  --color-text: #1F2937;
 }
 
 @layer base {
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+  }
+
   html {
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    @apply min-h-screen antialiased;
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    @apply min-h-screen antialiased bg-sahartoon-beige text-sahartoon-dark;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
   }
 
   button,
@@ -38,32 +60,135 @@
   textarea {
     font: inherit;
   }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    @apply outline-none;
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-sahartoon-beige;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-sahartoon-neutral rounded-full hover:bg-sahartoon-neutral/80;
+  }
 }
 
 @layer components {
-  .card { @apply bg-[var(--color-surface)] rounded-xl shadow-sm border border-[var(--color-bg-shape)] p-5; }
-  .input-primary { @apply w-full border border-[var(--color-bg-shape)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-ui)] focus:border-[var(--color-ui)]; }
-  .btn-primary { @apply bg-[var(--color-yellow-button)] hover:bg-[#e6c500] text-[var(--color-black)] rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
-  .btn-secondary { @apply bg-[var(--color-bg-shape)] hover:bg-[#ccd7de] text-[var(--color-text)] rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
-  .btn-danger { @apply bg-[#d95d2a] hover:bg-[#c05426] text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors; }
-  .badge-tier-0 { @apply bg-[var(--color-bg-shape)] text-[var(--color-text)] border border-[var(--color-bg-shape)] px-2 py-0.5 rounded-full text-xs font-medium; }
-  .badge-tier-1 { @apply bg-[#fbe6cf] text-[var(--color-fox-dark)] border border-[#f6d4ab] px-2 py-0.5 rounded-full text-xs font-medium; }
-  .badge-tier-2 { @apply bg-[#fff3b5] text-[var(--color-fox-dark)] border border-[#ffe57d] px-2 py-0.5 rounded-full text-xs font-medium; }
-  .badge-tier-3 { @apply bg-[#f6c4a6] text-[var(--color-fox-dark)] border border-[#f1a270] px-2 py-0.5 rounded-full text-xs font-medium; }
+  /* Cards */
+  .card { 
+    @apply bg-white rounded-xl shadow-soft border border-sahartoon-neutral/20 p-5 transition-all duration-300; 
+  }
+  
+  .card:hover {
+    @apply shadow-soft-md;
+  }
 
-  .bg-app-background { background-color: var(--color-bg); }
-  .bg-panel { background-color: var(--color-surface); }
-  .bg-panel-soft { background-color: var(--color-bg-shape); }
-  .bg-brand { background-color: var(--color-ui); }
-  .bg-brand-dark { background-color: var(--color-ui-dark); }
-  .text-brand-dark { color: var(--color-ui-dark); }
-  .text-brand { color: var(--color-ui); }
-  .bg-fox { background-color: var(--color-fox); }
-  .bg-fox-soft { background-color: var(--color-principal); }
-  .text-fox-dark { color: var(--color-fox-dark); }
-  .bg-yellow-brand { background-color: var(--color-yellow-button); }
-  .text-yellow-brand { color: var(--color-yellow-button); }
-  .border-panel { border-color: var(--color-bg-shape); }
-  .shadow-brand { box-shadow: 0 20px 40px rgba(47,168,204,0.12); }
-  .shadow-fox { box-shadow: 0 18px 40px rgba(244,124,32,0.18); }
+  /* Inputs */
+  .input-primary { 
+    @apply w-full px-4 py-2.5 bg-sahartoon-beige border border-sahartoon-neutral/30 rounded-lg text-sahartoon-dark placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sahartoon-burgundy/20 focus:border-sahartoon-burgundy transition-all duration-200; 
+  }
+
+  .input-primary::placeholder {
+    @apply text-slate-500;
+  }
+
+  /* Buttons */
+  .btn-primary { 
+    @apply bg-sahartoon-burgundy hover:bg-sahartoon-burgundy/90 text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 shadow-soft hover:shadow-soft-md hover:-translate-y-0.5 active:translate-y-0; 
+  }
+
+  .btn-secondary { 
+    @apply bg-sahartoon-neutral hover:bg-sahartoon-neutral/80 text-sahartoon-dark rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200; 
+  }
+
+  .btn-danger { 
+    @apply bg-sahartoon-danger hover:bg-sahartoon-danger/90 text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 shadow-soft hover:shadow-soft-md; 
+  }
+
+  /* Badges */
+  .badge-tier-0 { 
+    @apply bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full text-xs font-semibold; 
+  }
+
+  .badge-tier-1 { 
+    @apply bg-green-50 text-sahartoon-success px-2.5 py-1 rounded-full text-xs font-semibold; 
+  }
+
+  .badge-tier-2 { 
+    @apply bg-amber-50 text-sahartoon-warning px-2.5 py-1 rounded-full text-xs font-semibold; 
+  }
+
+  .badge-tier-3 { 
+    @apply bg-red-50 text-sahartoon-danger px-2.5 py-1 rounded-full text-xs font-semibold; 
+  }
+
+  /* Brand Utilities */
+  .bg-app-background { @apply bg-sahartoon-beige; }
+  .bg-panel { @apply bg-white; }
+  .bg-panel-soft { @apply bg-sahartoon-beige; }
+  .bg-brand { @apply bg-sahartoon-burgundy; }
+  .text-brand { @apply text-sahartoon-burgundy; }
+  .border-brand { @apply border-sahartoon-burgundy; }
+  
+  /* Shadow utilities */
+  .shadow-brand { @apply shadow-soft; }
+  .shadow-brand-lg { @apply shadow-soft-lg; }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1a1a1a;
+    --color-surface: #2d2d2d;
+    --color-text: #f0f0f0;
+  }
+
+  body {
+    @apply bg-slate-900 text-slate-100;
+  }
+
+  .card {
+    @apply bg-slate-800 border-slate-700;
+  }
+
+  .input-primary {
+    @apply bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
 }

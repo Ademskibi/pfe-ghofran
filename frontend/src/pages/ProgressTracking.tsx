@@ -36,9 +36,13 @@ const ProgressTracking: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-6">
-        <h2 className="text-2xl font-bold text-slate-800">{t('progressTracking.progressTracking')}</h2>
+    <div className="min-h-screen bg-sahartoon-beige dark:bg-slate-900 transition-colors duration-300">
+      {/* Dark header section (no white bar) */}
+      <div className="bg-sahartoon-burgundy text-white px-6 py-4 shadow-soft flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">{t('progressTracking.progressTracking')}</h1>
+          <p className="text-white/80 text-sm mt-1">Suivre la progression des élèves</p>
+        </div>
         <div className="w-64">
            <select 
              className="input-primary w-full shadow-sm"
@@ -53,17 +57,19 @@ const ProgressTracking: React.FC = () => {
         </div>
       </div>
 
-      {!selectedStudentId ? (
-         <div className="card py-20 flex flex-col items-center justify-center text-slate-400">
+      {/* Content Area */}
+      <div className="px-6 py-6 space-y-6 max-w-7xl mx-auto">
+        {!selectedStudentId ? (
+          <div className="card py-20 flex flex-col items-center justify-center text-slate-400">
             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
                <svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                </svg>
             </div>
             <p className="text-lg font-medium text-slate-500">{t('progressTracking.selectStudent')}</p>
-         </div>
-      ) : (
-         <div className="space-y-6">
+          </div>
+        ) : (
+          <div className="space-y-6">
             <div className="card">
               <h3 className="text-lg font-semibold text-slate-800 mb-4 tracking-tight">{t('progressTracking.driTrend')}</h3>
               {studentSessions.length > 0 ? (
@@ -104,8 +110,9 @@ const ProgressTracking: React.FC = () => {
                  </div>
                </div>
             )}
-         </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -197,34 +197,6 @@ const DYSLEXIA_QUESTIONS = [
     timeLimit: 22,
     domain_category: "Discrimination visuelle fine",
     curriculum: "5ème-6ème"
-  },
-  {
-    id: "dy_C5", complexity: 3, questionType: "choice",
-    instruction: "Quel mot est un homonyme de « VER » ?",
-    choices: ["ver", "vers", "vert", "verre"],
-    answer: "verre",
-    timeLimit: 20,
-    domain_category: "Homonymes et sens lexical",
-    curriculum: "5ème-6ème"
-  },
-  {
-    id: "dy_C6", complexity: 3, questionType: "text",
-    instruction: "Écoute et écris la phrase dictée",
-    stimulus: "✏️",
-    answer: "les oiseaux chantent",
-    timeLimit: 50,
-    domain_category: "Orthographe en contexte",
-    curriculum: "5ème-6ème",
-    dictation: "les oiseaux chantent"
-  },
-  {
-    id: "dy_C7", complexity: 3, questionType: "choice",
-    instruction: "Quel préfixe donne le contraire de POSSIBLE ?",
-    choices: ["im-", "in-", "dé-", "re-"],
-    answer: "im-",
-    timeLimit: 22,
-    domain_category: "Morphologie dérivationnelle",
-    curriculum: "5ème-6ème"
   }
 ];
 
@@ -421,33 +393,6 @@ const DYSCALCULIA_QUESTIONS = [
     answer: "12 DT",
     timeLimit: 28,
     domain_category: "Problème de vie quotidienne — monnaie tunisienne",
-    curriculum: "5ème-6ème"
-  },
-  {
-    id: "dc_C6", complexity: 3, questionType: "choice",
-    instruction: "Quelle est la moitié de 124 ?",
-    choices: ["60", "61", "62", "63"],
-    answer: "62",
-    timeLimit: 25,
-    domain_category: "Valeur de la moitié",
-    curriculum: "5ème-6ème"
-  },
-  {
-    id: "dc_C7", complexity: 3, questionType: "text",
-    instruction: "Calcule : 100 – 37 = ?",
-    stimulus: "100 – 37 = ?",
-    answer: "63",
-    timeLimit: 30,
-    domain_category: "Soustraction à deux chiffres",
-    curriculum: "5ème-6ème"
-  },
-  {
-    id: "dc_C8", complexity: 3, questionType: "choice",
-    instruction: "Suite : 5, 10, 20, 40, … ?",
-    choices: ["60", "70", "80", "90"],
-    answer: "80",
-    timeLimit: 25,
-    domain_category: "Suite géométrique",
     curriculum: "5ème-6ème"
   }
 ];
