@@ -2,36 +2,99 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ══════════════════════════════════════════════
+   GOOGLE FONTS
+══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+/* ══════════════════════════════════════════════
+   CSS VARIABLES — LIGHT MODE (default)
+══════════════════════════════════════════════ */
 :root {
   color-scheme: light;
-  /* Sahartoon Design System */
-  --sahartoon-burgundy: #8B1E3F;
-  --sahartoon-beige: #F8F7F4;
-  --sahartoon-cream: #FDFCFB;
-  --sahartoon-success: #22C55E;
-  --sahartoon-warning: #F59E0B;
-  --sahartoon-danger: #DC2626;
-  --sahartoon-neutral: #E5E7EB;
-  --sahartoon-dark: #1F2937;
-  --sahartoon-light: #F3F4F6;
-  
-  /* Legacy colors (for compatibility) */
-  --color-principal: #F28C38;
-  --color-fox: #F47C20;
-  --color-fox-dark: #7A3F14;
-  --color-fox-detail: #6B3A1E;
-  --color-muzzle: #F4EFEA;
-  --color-black: #1A1A1A;
-  --color-glasses: #3ED1C8;
-  --color-ui: #2FA8CC;
-  --color-ui-dark: #1F6F8B;
-  --color-yellow-button: #FFD500;
-  --color-bg: #F8F7F4;
-  --color-bg-shape: #E5E7EB;
-  --color-surface: #FFFFFF;
-  --color-text: #1F2937;
+
+  /* Brand Palette */
+  --brand-cyan:    #11b4d7;
+  --brand-yellow:  #f4dd15;
+  --brand-orange:  #f38033;
+  --brand-lime:    #fcfe5e;
+  --brand-black:   #000000;
+
+  /* Surface tokens */
+  --bg-page:     #f8f9fa;
+  --bg-card:     #ffffff;
+  --bg-sidebar:  #ffffff;
+  --bg-header:   #ffffff;
+  --bg-input:    #ffffff;
+  --bg-muted:    #f1f5f9;
+
+  /* Border tokens */
+  --border-base:   #e5e7eb;
+  --border-strong: #d1d5db;
+
+  /* Text tokens */
+  --text-primary:   #0a0a0a;
+  --text-secondary: #4b5563;
+  --text-muted:     #9ca3af;
+  --text-inverted:  #ffffff;
+
+  /* Shadow tokens */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg:  0 10px 24px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.04);
+
+  /* Sahartoon alias (keep compatibility with existing code) */
+  --sahartoon-burgundy: #11b4d7;
+  --sahartoon-beige:    #f8f9fa;
+  --sahartoon-cream:    #ffffff;
+  --sahartoon-success:  #11b4d7;
+  --sahartoon-warning:  #f4dd15;
+  --sahartoon-danger:   #f38033;
+  --sahartoon-neutral:  #e5e7eb;
+  --sahartoon-dark:     #0a0a0a;
+  --sahartoon-light:    #f1f5f9;
 }
 
+/* ══════════════════════════════════════════════
+   CSS VARIABLES — DARK MODE
+══════════════════════════════════════════════ */
+.dark {
+  color-scheme: dark;
+
+  /* Surface tokens */
+  --bg-page:     #000000;
+  --bg-card:     #0d0d0d;
+  --bg-sidebar:  #080808;
+  --bg-header:   #080808;
+  --bg-input:    #111111;
+  --bg-muted:    #141414;
+
+  /* Border tokens */
+  --border-base:   #1f1f1f;
+  --border-strong: #2a2a2a;
+
+  /* Text tokens */
+  --text-primary:   #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --text-muted:     #555555;
+  --text-inverted:  #000000;
+
+  /* Shadow tokens */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-lg:  0 10px 30px rgba(0,0,0,0.6), 0 4px 10px rgba(0,0,0,0.4);
+
+  /* Sahartoon alias overrides */
+  --sahartoon-beige:   #000000;
+  --sahartoon-cream:   #0d0d0d;
+  --sahartoon-neutral: #1f1f1f;
+  --sahartoon-dark:    #f0f0f0;
+  --sahartoon-light:   #141414;
+}
+
+/* ══════════════════════════════════════════════
+   BASE RESET
+══════════════════════════════════════════════ */
 @layer base {
   html, body, #root {
     margin: 0;
@@ -42,153 +105,312 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
   body {
-    @apply min-h-screen antialiased bg-sahartoon-beige text-sahartoon-dark;
-    margin: 0;
-    padding: 0;
+    min-height: 100vh;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
   }
 
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
-  }
+  button, input, select, textarea { font: inherit; }
 
-  input:focus,
-  select:focus,
-  textarea:focus {
-    @apply outline-none;
-  }
+  input:focus, select:focus, textarea:focus { outline: none; }
 
-  /* Scrollbar Styling */
-  ::-webkit-scrollbar {
-    @apply w-2;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-sahartoon-beige;
-  }
-
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    @apply bg-sahartoon-neutral rounded-full hover:bg-sahartoon-neutral/80;
+    background: var(--border-strong);
+    border-radius: 99px;
   }
+  ::-webkit-scrollbar-thumb:hover { background: var(--brand-cyan); }
 }
 
+/* ══════════════════════════════════════════════
+   COMPONENT CLASSES
+══════════════════════════════════════════════ */
 @layer components {
-  /* Cards */
-  .card { 
-    @apply bg-white rounded-xl shadow-soft border border-sahartoon-neutral/20 p-5 transition-all duration-300; 
-  }
-  
-  .card:hover {
-    @apply shadow-soft-md;
-  }
 
-  /* Inputs */
-  .input-primary { 
-    @apply w-full px-4 py-2.5 bg-sahartoon-beige border border-sahartoon-neutral/30 rounded-lg text-sahartoon-dark placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sahartoon-burgundy/20 focus:border-sahartoon-burgundy transition-all duration-200; 
-  }
+  /* ── Page backgrounds ── */
+  .bg-app-background { background-color: var(--bg-page); }
+  .bg-panel          { background-color: var(--bg-card); }
+  .bg-sidebar-panel  { background-color: var(--bg-sidebar); }
+  .bg-panel-soft     { background-color: var(--bg-muted); }
 
-  .input-primary::placeholder {
-    @apply text-slate-500;
-  }
-
-  /* Buttons */
-  .btn-primary { 
-    @apply bg-sahartoon-burgundy hover:bg-sahartoon-burgundy/90 text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 shadow-soft hover:shadow-soft-md hover:-translate-y-0.5 active:translate-y-0; 
-  }
-
-  .btn-secondary { 
-    @apply bg-sahartoon-neutral hover:bg-sahartoon-neutral/80 text-sahartoon-dark rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200; 
-  }
-
-  .btn-danger { 
-    @apply bg-sahartoon-danger hover:bg-sahartoon-danger/90 text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 shadow-soft hover:shadow-soft-md; 
-  }
-
-  /* Badges */
-  .badge-tier-0 { 
-    @apply bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full text-xs font-semibold; 
-  }
-
-  .badge-tier-1 { 
-    @apply bg-green-50 text-sahartoon-success px-2.5 py-1 rounded-full text-xs font-semibold; 
-  }
-
-  .badge-tier-2 { 
-    @apply bg-amber-50 text-sahartoon-warning px-2.5 py-1 rounded-full text-xs font-semibold; 
-  }
-
-  .badge-tier-3 { 
-    @apply bg-red-50 text-sahartoon-danger px-2.5 py-1 rounded-full text-xs font-semibold; 
-  }
-
-  /* Brand Utilities */
-  .bg-app-background { @apply bg-sahartoon-beige; }
-  .bg-panel { @apply bg-white; }
-  .bg-panel-soft { @apply bg-sahartoon-beige; }
-  .bg-brand { @apply bg-sahartoon-burgundy; }
-  .text-brand { @apply text-sahartoon-burgundy; }
-  .border-brand { @apply border-sahartoon-burgundy; }
-  
-  /* Shadow utilities */
-  .shadow-brand { @apply shadow-soft; }
-  .shadow-brand-lg { @apply shadow-soft-lg; }
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #1a1a1a;
-    --color-surface: #2d2d2d;
-    --color-text: #f0f0f0;
-  }
-
-  body {
-    @apply bg-slate-900 text-slate-100;
-  }
-
+  /* ── Cards ── */
   .card {
-    @apply bg-slate-800 border-slate-700;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-base);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 1.25rem;
+    transition: box-shadow 0.25s ease, transform 0.2s ease, border-color 0.2s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: rgba(17,180,215,0.35);
   }
 
+  /* ── Inputs ── */
   .input-primary {
-    @apply bg-slate-700 border-slate-600 text-slate-100 placeholder-slate-400;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-base);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
+  .input-primary::placeholder { color: var(--text-muted); }
+  .input-primary:focus {
+    border-color: var(--brand-cyan);
+    box-shadow: 0 0 0 3px rgba(17,180,215,0.15);
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(135deg, var(--brand-cyan), #0d97b8);
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(17,180,215,0.3);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(17,180,215,0.45);
+  }
+  .btn-primary:active  { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+    border: 1px solid var(--border-base);
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .btn-secondary:hover {
+    background-color: var(--border-base);
+    border-color: var(--border-strong);
+  }
+
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(135deg, #f38033, #e06020);
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(243,128,51,0.3);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(243,128,51,0.45);
+  }
+
+  /* ── Severity Badges ── */
+  .badge-tier-0 {
+    background: var(--bg-muted);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-base);
+    padding: 0.2rem 0.7rem;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-tier-1 {
+    background: rgba(17,180,215,0.12);
+    color: #11b4d7;
+    border: 1px solid rgba(17,180,215,0.25);
+    padding: 0.2rem 0.7rem;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .badge-tier-2 {
+    background: rgba(244,221,21,0.12);
+    color: #c9a800;
+    border: 1px solid rgba(244,221,21,0.35);
+    padding: 0.2rem 0.7rem;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .dark .badge-tier-2 { color: #f4dd15; }
+  .badge-tier-3 {
+    background: rgba(243,128,51,0.12);
+    color: #f38033;
+    border: 1px solid rgba(243,128,51,0.25);
+    padding: 0.2rem 0.7rem;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── Brand helpers ── */
+  .text-brand       { color: var(--brand-cyan); }
+  .border-brand     { border-color: var(--brand-cyan); }
+  .bg-brand         { background-color: var(--brand-cyan); }
+  .shadow-soft      { box-shadow: var(--shadow-sm); }
+  .shadow-soft-md   { box-shadow: var(--shadow-md); }
+  .shadow-soft-lg   { box-shadow: var(--shadow-lg); }
+
+  /* ── Glow accents (dark mode friendly) ── */
+  .glow-cyan   { box-shadow: 0 0 16px rgba(17,180,215,0.4); }
+  .glow-yellow { box-shadow: 0 0 16px rgba(244,221,21,0.4); }
+  .glow-orange { box-shadow: 0 0 16px rgba(243,128,51,0.4); }
+
+  /* ── Sidebar nav item ── */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.875rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-item:hover {
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+    border-color: var(--border-base);
+  }
+  .nav-item.active {
+    background: rgba(17,180,215,0.1);
+    color: var(--brand-cyan);
+    border-color: rgba(17,180,215,0.2);
+    font-weight: 600;
+  }
+  .dark .nav-item.active {
+    background: rgba(17,180,215,0.08);
+    box-shadow: inset 0 0 0 1px rgba(17,180,215,0.15);
+  }
+
+  /* ── Toggle pill for dark mode ── */
+  .theme-toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    border-radius: 99px;
+    background-color: var(--border-base);
+    border: 1px solid var(--border-strong);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .theme-toggle.on { background-color: var(--brand-cyan); }
+  .theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .theme-toggle.on::after { transform: translateX(20px); }
 }
 
-/* Animations */
+/* ══════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════ */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-
 @keyframes slideUp {
-  from {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes pulseSoft {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+@keyframes scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
 }
 
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
-}
+.animate-fadeIn    { animation: fadeIn 0.3s ease-in-out; }
+.animate-slideUp   { animation: slideUp 0.35s ease-out; }
+.animate-shimmer   { animation: shimmer 1.8s infinite; }
+.animate-float     { animation: float 3s ease-in-out infinite; }
+.animate-pulse-soft { animation: pulseSoft 2.5s ease-in-out infinite; }
 
-.animate-slideUp {
-  animation: slideUp 0.3s ease-out;
-}
+/* ══════════════════════════════════════════════
+   DARK MODE UTILITY OVERRIDES
+   These let bg-white, bg-gray-50 etc. auto-adapt
+══════════════════════════════════════════════ */
+.dark .bg-white       { background-color: var(--bg-card) !important; }
+.dark .bg-gray-50,
+.dark .bg-slate-50    { background-color: var(--bg-muted) !important; }
+.dark .border-gray-200,
+.dark .border-slate-200 { border-color: var(--border-base) !important; }
+.dark .text-gray-500,
+.dark .text-slate-500   { color: var(--text-secondary) !important; }
+.dark .text-gray-400,
+.dark .text-slate-400   { color: var(--text-muted) !important; }
+.dark .text-black,
+.dark .text-gray-900,
+.dark .text-slate-900   { color: var(--text-primary) !important; }
+
+/* Sahartoon-specific dark overrides */
+.dark .bg-sahartoon-beige { background-color: #000000 !important; }
+.dark .bg-sahartoon-light { background-color: #141414 !important; }
+.dark .border-sahartoon-neutral { border-color: #1f1f1f !important; }

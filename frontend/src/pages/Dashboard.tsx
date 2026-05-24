@@ -58,11 +58,32 @@ const Dashboard: React.FC = () => {
   const selectedStudent = students.find((s) => s._id === selectedStudentId) || null;
 
   return (
-    <div className="min-h-screen bg-sahartoon-beige dark:bg-slate-900 transition-colors duration-300">
-      {/* Dark Maroon Header */}
-      <div className="bg-sahartoon-burgundy text-white px-6 py-4 shadow-soft">
-        <h1 className="text-2xl font-bold">Sahartoon Enseignant TN</h1>
-        <p className="text-white/80 text-sm mt-1">Dépistage des troubles DYS — Niveaux de gravité</p>
+    <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: 'var(--bg-page)' }}>
+      {/* Dashboard Header */}
+      <div
+        className="px-6 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+        style={{ backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border-base)' }}
+      >
+        <div>
+          <h1 className="text-xl font-bold flex items-center gap-3" style={{ color: 'var(--text-primary)' }}>
+            Tableau de bord
+            <span
+              className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md uppercase tracking-wider"
+              style={{ backgroundColor: 'rgba(17,180,215,0.1)', color: 'var(--brand-cyan)', border: '1px solid rgba(17,180,215,0.2)' }}
+            >
+              DYS Monitor
+            </span>
+          </h1>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Dépistage des troubles DYS — Niveaux de gravité</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExport}
+            className="btn-secondary flex items-center gap-2 text-xs"
+          >
+            📥 Exporter CSV
+          </button>
+        </div>
       </div>
 
       {/* Severity Legend */}

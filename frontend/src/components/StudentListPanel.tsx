@@ -49,14 +49,14 @@ const StudentListPanel: React.FC<StudentListProps> = ({
 
   const getAvatarColor = (name: string) => {
     const colors = [
-      'bg-red-100 text-red-600',
-      'bg-blue-100 text-blue-600',
-      'bg-green-100 text-green-600',
-      'bg-purple-100 text-purple-600',
-      'bg-pink-100 text-pink-600',
-      'bg-indigo-100 text-indigo-600',
-      'bg-yellow-100 text-yellow-600',
-      'bg-orange-100 text-orange-600',
+      'bg-red-50 text-red-600 border border-red-200',
+      'bg-blue-50 text-blue-600 border border-blue-200',
+      'bg-emerald-50 text-emerald-600 border border-emerald-200',
+      'bg-purple-50 text-purple-600 border border-purple-200',
+      'bg-pink-50 text-pink-600 border border-pink-200',
+      'bg-cyan-50 text-cyan-600 border border-cyan-200',
+      'bg-amber-50 text-amber-600 border border-amber-200',
+      'bg-orange-50 text-orange-600 border border-orange-200',
     ];
     const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return colors[hash % colors.length];
@@ -83,20 +83,29 @@ const StudentListPanel: React.FC<StudentListProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-xl shadow-soft overflow-hidden">
-      {/* Header */}
-      <div className="p-4 border-b border-sahartoon-neutral/20">
-        <h3 className="text-lg font-bold text-sahartoon-dark mb-4">👩‍🎓 Élèves</h3>
+    <div
+      className="flex flex-col h-full rounded-xl overflow-hidden"
+      style={{
+        backgroundColor: 'var(--bg-card)',
+        border: '1px solid var(--border-base)',
+        boxShadow: 'var(--shadow-sm)',
+      }}
+    >
+      <div className="p-4" style={{ borderBottom: '1px solid var(--border-base)' }}>
+        <h3 className="text-xs uppercase font-mono tracking-widest mb-4 flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
+          <span className="h-2 w-2 rounded-full animate-pulse-soft" style={{ backgroundColor: 'var(--brand-cyan)' }}></span>
+          Élèves Inscrits
+        </h3>
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
           <input
             type="text"
             placeholder="Rechercher un élève..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-sahartoon-beige border border-sahartoon-neutral/30 rounded-lg text-sm text-sahartoon-dark placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sahartoon-burgundy/20 focus:border-sahartoon-burgundy transition-all duration-200"
+            className="input-primary pl-10"
           />
         </div>
       </div>
@@ -117,29 +126,32 @@ const StudentListPanel: React.FC<StudentListProps> = ({
                 <button
                   key={student._id}
                   onClick={() => onSelectStudent(student._id)}
-                  className={`w-full text-left p-4 rounded-lg transition-all duration-200 flex items-center justify-between gap-3 group ${
-                    isSelected
-                      ? 'bg-sahartoon-burgundy/10 border-2 border-sahartoon-burgundy shadow-soft-md'
-                      : 'bg-sahartoon-beige/50 border border-transparent hover:bg-sahartoon-beige hover:shadow-soft'
-                  }`}
+                  className="w-full text-left p-3.5 rounded-xl transition-all duration-200 flex items-center justify-between gap-3 group"
+                  style={isSelected ? {
+                    backgroundColor: 'rgba(17,180,215,0.08)',
+                    border: '1px solid rgba(17,180,215,0.25)',
+                  } : {
+                    backgroundColor: 'var(--bg-muted)',
+                    border: '1px solid var(--border-base)',
+                  }}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     {/* Avatar */}
                     <div
-                      className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${getAvatarColor(student.fullName)}`}
+                      className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center font-mono font-bold text-xs ${getAvatarColor(student.fullName)}`}
                     >
                       {getInitials(student.fullName)}
                     </div>
 
                     {/* Student Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-sahartoon-dark truncate">
+                      <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
                         {student.fullName}
                       </p>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
-                        <span>{calculateAge(student.dateOfBirth)} ans</span>
+                      <div className="flex items-center gap-2 mt-1 text-[11px] font-mono" style={{ color: 'var(--text-muted)' }}>
+                        <span>{calculateAge(student.dateOfBirth)} ANS</span>
                         <span>•</span>
-                        <span>Classe {student.grade}</span>
+                        <span>CLASSE {student.grade}</span>
                       </div>
                     </div>
                   </div>
@@ -159,8 +171,11 @@ const StudentListPanel: React.FC<StudentListProps> = ({
       </div>
 
       {/* Footer Stats */}
-      <div className="px-4 py-3 border-t border-sahartoon-neutral/20 bg-sahartoon-beige/30 text-xs text-slate-600 font-medium text-center">
-        {filteredStudents.length} de {students.length} élèves
+      <div
+        className="px-4 py-3 text-[10px] font-mono tracking-wider text-center"
+        style={{ borderTop: '1px solid var(--border-base)', backgroundColor: 'var(--bg-muted)', color: 'var(--text-muted)' }}
+      >
+        {filteredStudents.length} / {students.length} élèves
       </div>
     </div>
   );

@@ -58,22 +58,33 @@ const SeverityLegendBar: React.FC<SeverityLegendProps> = ({
   ];
 
   return (
-    <div className="bg-white border-b border-sahartoon-neutral px-6 py-4 shadow-soft sticky top-[88px] z-30">
-      <div className="flex items-center justify-center gap-8 flex-wrap">
+    <div
+      className="border-b px-6 py-4 sticky top-[68px] z-30"
+      style={{
+        backgroundColor: 'var(--bg-card)',
+        borderColor: 'var(--border-base)',
+        boxShadow: 'var(--shadow-sm)',
+      }}
+    >
+      <div className="flex items-center justify-center gap-6 flex-wrap">
         {levels.map((level) => {
           const Icon = level.icon;
           const percentage = getPercentage(level.count);
           return (
             <div
               key={level.id}
-              className="flex items-center gap-3 px-4 py-3 rounded-full bg-sahartoon-beige border border-sahartoon-neutral/30 hover:shadow-soft-md transition-all duration-200"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+              style={{
+                backgroundColor: 'var(--bg-muted)',
+                border: '1px solid var(--border-base)',
+              }}
             >
-              <div className={`flex-shrink-0 ${level.color} p-2 rounded-full text-white`}>
+              <div className={`flex-shrink-0 ${level.color} p-2 rounded-lg text-white shadow-sm`}>
                 <Icon className="w-4 h-4" />
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-semibold text-sahartoon-dark">{level.label}</span>
-                <span className={`text-sm font-bold ${level.textColor}`}>
+                <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>{level.label}</span>
+                <span className={`text-xs font-mono font-bold ${level.textColor}`}>
                   {level.count} ({percentage}%) — {level.range}
                 </span>
               </div>
